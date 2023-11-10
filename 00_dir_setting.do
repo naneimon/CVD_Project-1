@@ -32,7 +32,7 @@ set maxvar 32767
 		
 		global box			"C:\Users\Nicholus Tint Zaw\Box\Myanmar CVD Study 2023-2024\Feasibility Study"
 		global googledrive	""
-		global github		"C:\Users\Nicholus Tint Zaw\Documents\GitHub\cvd_project"
+		global github		"C:\Users\Nicholus Tint Zaw\Documents\GitHub\CVD_Project"
 		
 	}
 
