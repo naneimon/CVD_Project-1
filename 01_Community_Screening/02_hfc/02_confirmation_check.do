@@ -13,6 +13,18 @@ Task outline:
 	2. Check Confirmation visit is working correctly or not
 
 *******************************************************************************/
+
+	********************************************************************************
+	** Directory Settings **
+	********************************************************************************
+
+	do "$github/00_dir_setting.do"
+
+	********************************************************************************
+	* import raw data  *
+	********************************************************************************
+	
+	use "$sc_check/cvd_screening_check.dta", clear 
 	
 	****************************************************************************
 	** Confirmation Visit Calculation **
@@ -93,6 +105,36 @@ Task outline:
 	****************************************************************************
 	** Confirmation Visit Calculation **
 	****************************************************************************
+	/*
+	** Confirmatory visit criteira **
+	
+	note_mhist_dbp_no		 	Responsed "No" to the follow-up questions related to taking medication 
+								for raised blood pressure in the last 2 weeks question (OR) not able to present the medication
+	note_mhist_ddb_no		 	Responsed "No" to the follow-up questions related to taking medication for diabetes 
+								in the last 2 weeks question (OR) not able to present the medication
+	note_mhist_dasp_no		 	Responsed "No" to the follow-up questions related to taking aspirin in the last 2 weeks question 
+								(OR) not able to present the medication
+	note_mhist_dstat_no		 	Responsed "No" to the follow-up questions related to taking statins in the last 2 weeks question 
+								(OR) not able to present the medication
+	note_mhist_hypertension		Medical history of hypertension
+	note_mhist_drug_bp			Medical history of taking medication for raised blood pressure in the last 2 weeks
+	note_mhist_diabetes			Medical history of diabetes
+	note_mhist_drug_bsug		Medical history of taking medication for diabetes in the last 2 weeks
+	note_mhist_stroke			Medical history of stroke
+	note_mhist_heartatt			Medical history of heart attack
+	note_mhist_drug_aspirin		Taking aspirin in the last 2 weeks
+	note_mhist_drug_statins		Taking statins in the last 2 weeks
+	note_cal_syst_avg			Average Systolic Blood Pressure >140
+	note_cal_diast_avg			Average Diastolic Blood Pressure >90
+	note_cal_bf_abnormal		At least one time Blood Pressure measurement was abnormal. 
+	note_blood_glucose			Blood Blucose (re-check) > 200
+	note_cvd_risk_yes			CVD Risk > 10%
+	
+	Re-calculated all the XLS programming calculation field - and those variable started with 
+	"ck_" prefix. then re-construct the check confirmatory visit variable ck_cal_confirm_visit
+	
+	*/
+	
 	
 	* Hypertension Medical History 
 	destring cal_mhist_dbp_no cf_mhist_hypertension cf_mhist_drug_bp, replace 
@@ -104,6 +146,10 @@ Task outline:
 	count if cf_mhist_hypertension != ck_hypertension
 	count if cf_mhist_drug_bp != ck_hypertension_d
 	count if cal_mhist_dbp_no != ck_hpd_cf
+	
+	order ck_hpd_cf, after(cal_mhist_dbp_no) 
+	order ck_hypertension, after(cf_mhist_hypertension)
+	order ck_hypertension_d, after(cf_mhist_drug_bp)
 
 	* Diabetes Medical History 
 	destring cal_mhist_ddb_no cf_mhist_diabetes cf_mhist_drug_bsug, replace 
@@ -115,6 +161,10 @@ Task outline:
 	count if cf_mhist_diabetes != ck_diabetes
 	count if cf_mhist_drug_bsug != ck_diabetes_d
 	count if cal_mhist_ddb_no != ck_ddd_cf
+
+	order ck_diabetes, after(cf_mhist_diabetes)
+	order ck_diabetes_d, after(cf_mhist_drug_bsug) 
+	order ck_ddd_cf, after(cal_mhist_ddb_no)
 	
 	* Stroke and Heart Attack Medical History 
 	destring cf_mhist_stroke cf_mhist_heartatt cf_mhist_drug_aspirin cal_mhist_dasp_no cf_mhist_drug_statins cal_mhist_dstat_no, replace 
@@ -137,10 +187,17 @@ Task outline:
 	count if cal_mhist_dasp_no != ck_dasp_cf
 	count if cal_mhist_dstat_no != ck_dstat_cf
 	
+	order ck_stroke, after(cf_mhist_stroke)
+	order ck_heartatt, after(cf_mhist_heartatt)
+	order ck_aspirin_d, after(cf_mhist_drug_aspirin)
+	order ck_statins_d, after(cf_mhist_drug_statins) 
+	order ck_dasp_cf, after(cal_mhist_dasp_no) 
+	order ck_dstat_cf, after(cal_mhist_dstat_no)
+
 	* Medical Examination: Blood Pressure 
 	destring cf_cal_syst_avg cf_cal_diast_avg cf_cal_bf_abnormal, replace 
 	
-	// average measurement
+	// average BP measurement
 	gen ck_bp_syst_1 = bp_syst_1
 	replace ck_bp_syst_1 = bp_syst_rc_1_1 if !mi(bp_syst_rc_1_1)
 	
@@ -168,6 +225,16 @@ Task outline:
 	count if cf_cal_syst_avg != ck_cf_cal_syst_avg
 	count if cf_cal_diast_avg != ck_cf_cal_diast_avg
 	
+	order ck_cf_cal_syst_avg, after(cf_cal_syst_avg)
+	order ck_cf_cal_diast_avg, after(cf_cal_diast_avg) 
+	
+	order ck_bp_diast_1, after(cal_syst_final_1)
+	order ck_bp_diast_1, after(cal_diast_final_1)
+	order ck_bp_diast_2, after(cal_syst_final_2)
+	order ck_bp_diast_2, after(cal_diast_final_2)
+	order ck_bp_diast_3, after(cal_syst_final_3)
+	order ck_bp_diast_3, after(cal_diast_final_3)
+	
 	// abnormal value 
 	gen ck_syst_abn_1 = ((bp_syst_rc_1_1 <90 | bp_syst_rc_1_1 > 180) & !mi(bp_syst_rc_1_1))
 	gen ck_diast_abn_1 = (bp_diast_rc_1_1 > 110 & !mi(bp_diast_rc_1_1))
@@ -184,14 +251,27 @@ Task outline:
 	
 	count if cf_cal_bf_abnormal != ck_cf_cal_bf_abnormal
 
+	order ck_cf_cal_bf_abnormal, after(cf_cal_bf_abnormal)
+	
+	
+	order ck_syst_abn_1, after(cal_sys_rc_1) 
+	order ck_diast_abn_1, after(cal_diast_rc_1)
+	order ck_syst_abn_2, after(cal_sys_rc_2) 
+	order ck_diast_abn_2, after(cal_diast_rc_2)
+	order ck_syst_abn_3, after(cal_sys_rc_3) 
+	order ck_diast_abn_3, after(cal_diast_rc_3)
+
+
 	* Medical Examination: Blood Pressure 
 	destring cf_blood_glucose, replace 
 	
 	gen ck_cf_blood_glucose = (blood_glucose_rc > 200 & !mi(blood_glucose_rc))
 	
-	count if cf_blood_glucose != ck_cf_blood_glucose 
+	count if cf_blood_glucose != ck_cf_blood_glucose
 	
-
+	order ck_cf_blood_glucose, after(cf_blood_glucose)
+	
+	
 	* Final Check on Confirmation Visit Eligibility 
 	* note: used the revised cvd risk calculation instead of create new one in caluclation 
 	
@@ -215,15 +295,32 @@ Task outline:
 								ck_hpd_cf == 1 | ///
 								ck_ddd_cf == 1)
 
+	order ck_cal_confirm_visit, after(cal_confirm_visit)
+	
 	count if cal_confirm_visit != ck_cal_confirm_visit
 	
 	tab cal_confirm_visit ck_cal_confirm_visit, m
 	tab cal_confirm_visit ck_cal_confirm_visit if starttime >= td(10nov2023), m // working well after 10nov2023 
+	
+	preserve 
+	
+		keep if cal_confirm_visit != ck_cal_confirm_visit
+		
+		if _N > 0 {
+			
+			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+								sheet("Confirmatory Visit Error") firstrow(varlabels) sheetmodify
+		}
+	
+	restore 
 	
 	br bp_syst_3 bp_syst_rc_3_1 bp_diast_3 bp_diast_rc_3_1 ck_* cal_confirm_sum cal_mhist_dbp_no cal_mhist_ddb_no cal_mhist_dasp_no cal_mhist_dstat_no cal_confirm_medhis_sum cal_confirm_visit  ck_cal_confirm_visit if cal_confirm_visit != ck_cal_confirm_visit
 	
 	gen confirmation_visit_yes = ck_cal_confirm_visit
 	lab var confirmation_visit_yes "Final List for Confirmation Visit"
 	
+	
+	* Save as raw data 
+	save "$sc_check/cvd_screening_check.dta", replace 
 	
 	* end of dofile 

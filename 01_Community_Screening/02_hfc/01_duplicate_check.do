@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$sc_check/cvd_screening_raw.dta", clear 
+	use "$sc_raw/cvd_screening_raw.dta", clear 
 	
 	* (1) Duplicate by ID 
 	duplicates tag study_id, gen(dup_id)
@@ -63,5 +63,8 @@ Task outline:
 	
 	restore 	
 
+	
+	* Save as raw data 
+	save "$sc_check/cvd_screening_check.dta", replace 
 
 	* end of dofile 

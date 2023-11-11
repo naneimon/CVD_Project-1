@@ -1,7 +1,7 @@
 /*******************************************************************************
 
 Project Name		: 	CVD Project
-Purpose				:	Screening work			
+Purpose				:	Screening work - HFC 			
 Author				:	Nicholus Tint Zaw
 Date				: 	11/09/2023
 Modified by			:
@@ -9,9 +9,7 @@ Modified by			:
 
 
 Task outline: 
-	1. import raw excel file exported from KoBoToolbox 
-	2. label variables and response value
-	3. save as raw file for checking and HFC work
+	1. develop the key performance indicators for progress monitoring
 
 *******************************************************************************/
 
@@ -25,15 +23,16 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	import excel using "$sc_raw/CVD_Community_Screening_Tool.xlsx", sheet("CVD_Community_Screening_Tool") firstrow clear 
+	use "$sc_check/cvd_screening_check.dta", clear 
+		
+	****************************************************************************
+	** KPI indicators **
+	****************************************************************************
+
+	* interview date
 	
-	** Labeling 
-	* apply WB codebook command 
-	//iecodebook template using "$sc_check/codebook/cvd_screening_raw.xlsx"
-	iecodebook apply using "$sc_check/codebook/cvd_screening_raw.xlsx"
-
-
-	* Save as dta file 
-	save "$sc_raw/cvd_screening_raw.dta", replace  
-
+	
+	
+	
+	
 	* end of dofile 
