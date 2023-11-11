@@ -29,10 +29,49 @@ Task outline:
 	** KPI indicators **
 	****************************************************************************
 
+	* complete svy 
+	gen svy_complete = 1
+	lab var svy_complete "Completed Screening"
+	
+	
 	* interview date
+	gen svy_date = dofc(starttime)
+	format svy_date %td 
+	lab var svy_date "Data Collection Date"
+	order svy_date, after(starttime)
+	
+	* interview duration 
+	gen svy_duration = (endtime - starttime) /(60 * 1000)
+	lab var svy_duration "Survey Duration"
+	order svy_duration, after(endtime)
+	
+	* Time only var  
+	foreach var of varlist starttime endtime {
+		
+		local labold : variable label `var'
+		
+		gen double `var'_hm = mod(`var', 24 * 60 * 60000)
+		order `var'_hm, after(`var')
+
+		lab var `var'_hm "`labold' time"
+		
+		format `var'_hm %tcHH:MM 
+	
+	}
 	
 	
+	* Flag start/end time
+	gen svy_early = (starttime_hm < tc(07:00)) // before 7 AM
+	lab var svy_early "Survey Before 7 AM"
+	order svy_early, after(starttime_hm)
 	
+	gen svy_late = (endtime_hm > tc(18:00) & !mi(endtime)) // after 6 PM
+	lab var svy_late "Survey After 6 PM"
+	order svy_late, after(endtime_hm)
+	
+	
+	* Export csv file to use in R-shiny work
+	export delimited using "$shiny/community_screening.csv", replace 
 	
 	
 	* end of dofile 

@@ -1,0 +1,12 @@
+name: cvd_screening_monitoring
+title: cvd_screening_monitoring
+username: nicholustintzaw
+account: nicholustintzaw
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10490463
+bundleId: 7913990
+url: https://nicholustintzaw.shinyapps.io/cvd_screening_monitoring/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

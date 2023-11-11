@@ -99,6 +99,10 @@ set maxvar 32767
 	global addq_do_clean	"$addquest_do/03_clean"
 	global addq_do_constr	"$addquest_do/04_construct"
 	global addq_do_analyze	"$addquest_do/05_analysis"
+	
+	
+	** (5) 05_CVD_Screening_Dashboard
+	global shiny			"$github/05_CVD_Screening_Dashboard"
 
 	****************************************************************************
 	****************************************************************************
