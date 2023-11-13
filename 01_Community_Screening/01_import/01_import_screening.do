@@ -27,6 +27,8 @@ Task outline:
 	
 	import excel using "$sc_raw/CVD_Community_Screening_Tool.xlsx", sheet("CVD_Community_Screening_Tool") firstrow clear 
 	
+	destring mhist_drug_bp mhist_drug_bsug mhist_drug_aspirin mhist_drug_statins, replace 
+	
 	** Labeling 
 	* apply WB codebook command 
 	//iecodebook template using "$sc_check/codebook/cvd_screening_raw.xlsx"
