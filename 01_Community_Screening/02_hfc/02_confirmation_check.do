@@ -198,26 +198,8 @@ Task outline:
 	destring cf_cal_syst_avg cf_cal_diast_avg cf_cal_bf_abnormal, replace 
 	
 	// average BP measurement
-	gen ck_bp_syst_1 = bp_syst_1
-	replace ck_bp_syst_1 = bp_syst_rc_1_1 if !mi(bp_syst_rc_1_1)
-	
-	gen ck_bp_diast_1 = bp_diast_1
-	replace ck_bp_diast_1 = bp_diast_rc_1_1 if !mi(bp_diast_rc_1_1)
-
-	gen ck_bp_syst_2 = bp_syst_2
-	replace ck_bp_syst_2 = bp_syst_rc_2_1 if !mi(bp_syst_rc_2_1)
-	
-	gen ck_bp_diast_2 = bp_diast_2
-	replace ck_bp_diast_2 = bp_diast_rc_2_1 if !mi(bp_diast_rc_2_1)
-
-	gen ck_bp_syst_3 = bp_syst_3
-	replace ck_bp_syst_1 = bp_syst_rc_3_1 if !mi(bp_syst_rc_3_1)
-	
-	gen ck_bp_diast_3 = bp_diast_3
-	replace ck_bp_diast_3 = bp_diast_rc_3_1 if !mi(bp_diast_rc_3_1)
-
-	gen ck_cal_syst_avg = (ck_bp_syst_2 + ck_bp_syst_3) / 2
-	gen ck_cal_diast_avg = (ck_bp_diast_2 + ck_bp_diast_3) / 2
+	gen ck_cal_syst_avg = (bp_syst_2 + bp_syst_3) / 2
+	gen ck_cal_diast_avg = (bp_diast_2 + bp_diast_3) / 2
 
 	gen ck_cf_cal_syst_avg = (ck_cal_syst_avg > 140)
 	gen ck_cf_cal_diast_avg = (ck_cal_diast_avg > 90)
@@ -228,44 +210,21 @@ Task outline:
 	order ck_cf_cal_syst_avg, after(cf_cal_syst_avg)
 	order ck_cf_cal_diast_avg, after(cf_cal_diast_avg) 
 	
-	order ck_bp_diast_1, after(cal_syst_final_1)
-	order ck_bp_diast_1, after(cal_diast_final_1)
-	order ck_bp_diast_2, after(cal_syst_final_2)
-	order ck_bp_diast_2, after(cal_diast_final_2)
-	order ck_bp_diast_3, after(cal_syst_final_3)
-	order ck_bp_diast_3, after(cal_diast_final_3)
 	
 	// abnormal value 
-	gen ck_syst_abn_1 = ((bp_syst_rc_1_1 <90 | bp_syst_rc_1_1 > 180) & !mi(bp_syst_rc_1_1))
-	gen ck_diast_abn_1 = (bp_diast_rc_1_1 > 110 & !mi(bp_diast_rc_1_1))
-
-	gen ck_syst_abn_2 = ((bp_syst_rc_2_1 <90 | bp_syst_rc_2_1 > 180) & !mi(bp_syst_rc_2_1))
-	gen ck_diast_abn_2 = (bp_diast_rc_2_1 > 110 & !mi(bp_diast_rc_2_1))
-
-	gen ck_syst_abn_3 = ((bp_syst_rc_3_1 <90 | bp_syst_rc_3_1 > 180) & !mi(bp_syst_rc_3_1))
-	gen ck_diast_abn_3 = (bp_diast_rc_3_1 > 110 & !mi(bp_diast_rc_3_1))
+	gen ck_cal_syst_avg_abn = (ck_cal_syst_avg < 90 | ck_cal_syst_avg > 180)
+	gen ck_cal_diast_avg_abn = (ck_cal_diast_avg < 50 | ck_cal_diast_avg > 110)
 	
-	egen ck_bp_abn_all = rowtotal(ck_syst_abn_* ck_diast_abn_*)
-	
-	gen ck_cf_cal_bf_abnormal = (ck_bp_abn_all > 0)
+	gen ck_cf_cal_bf_abnormal = (ck_cal_syst_avg_abn == 1 | ck_cal_diast_avg_abn == 1)
 	
 	count if cf_cal_bf_abnormal != ck_cf_cal_bf_abnormal
 
 	order ck_cf_cal_bf_abnormal, after(cf_cal_bf_abnormal)
-	
-	
-	order ck_syst_abn_1, after(cal_sys_rc_1) 
-	order ck_diast_abn_1, after(cal_diast_rc_1)
-	order ck_syst_abn_2, after(cal_sys_rc_2) 
-	order ck_diast_abn_2, after(cal_diast_rc_2)
-	order ck_syst_abn_3, after(cal_sys_rc_3) 
-	order ck_diast_abn_3, after(cal_diast_rc_3)
-
 
 	* Medical Examination: Blood Pressure 
 	destring cf_blood_glucose, replace 
 	
-	gen ck_cf_blood_glucose = (blood_glucose_rc > 200 & !mi(blood_glucose_rc))
+	gen ck_cf_blood_glucose = (blood_glucose_rc_cal > 200 & !mi(blood_glucose_rc_cal))
 	
 	count if cf_blood_glucose != ck_cf_blood_glucose
 	

@@ -112,7 +112,7 @@ ui <- dashboardPage(
                     downloadButton("downloadData", "Download Data")
                   ),
                   mainPanel(
-                    tableOutput("duplicate_table")
+                    dataTableOutput("duplicate_table")
                   )
                 )
               )
@@ -205,7 +205,8 @@ server <- function(input, output) {
   })
   
   output$duplicate_table <- renderDataTable({
-    duplicates()
+    duplicates() %>%
+      arrange(study_id)
   })
   
   # Function to download the duplicate data as a CSV file
