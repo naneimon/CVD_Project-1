@@ -31,10 +31,51 @@ Task outline:
 	
 	** Labeling 
 	* apply WB codebook command 
-	//iecodebook template using "$sc_check/codebook/cvd_screening_raw.xlsx"
+	//iecodebook template using "$sc_check/codebook/cvd_screening_raw.xlsx", replace 
 	iecodebook apply using "$sc_check/codebook/cvd_screening_raw.xlsx"
 
 
+	** Initial data cleaning 
+	* Keep only data collection observation 
+	sort starttime
+	
+	drop if username == "dataliteracy4d" // drop NCL test cases 
+	keep if starttime >= tc(15nov2023 00:00:00) // screening start on 15th nov 2023
+	
+	* export as excel file 
+	preserve 
+	
+		keep if demo_vill == 47
+		
+		if _N > 0 {
+			
+			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+								sheet("not - Ta Re Poe Kwee") firstrow(varlabels) sheetmodify
+		}
+	
+	restore 
+	
+	* Re-construct the study ID - the first village result with duplicate in last 2 digit 
+	* as it mentioned the month number instead of minute 
+	* as a result, got duplicated study_id
+	
+	gen study_id_issue = study_id if starttime >= tc(15nov2023 00:00:00) & starttime < tc(17nov2023 00:00:00) 
+	lab var study_id_issue "Error Study ID - month instead of minute"
+	order study_id_issue, after(study_id)
+	
+	replace study_id = substr(study_id, 1, strlen(study_id) - 2)
+	gen minute = mm(starttime)
+	tostring minute, replace 
+	order minute, after(study_id) 
+	
+	// reconstruct the unique study_id
+	replace study_id = study_id_issue + minute 
+	
+	distinct study_id*
+	
+	drop minute
+	
+	
 	* Save as dta file 
 	save "$sc_raw/cvd_screening_raw.dta", replace  
 

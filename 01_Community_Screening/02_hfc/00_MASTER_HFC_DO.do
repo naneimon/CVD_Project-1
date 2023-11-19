@@ -25,6 +25,8 @@ Task outline:
 	local duplicate		1
 	local confirmation 	1
 	local preload		1
+	local kpi			1
+	local sumstat		1
 	
 	
 	****************************************************************************
@@ -47,5 +49,17 @@ Task outline:
 	    do "$sc_do_hfc/03_confirmation_preload.do"
 	}
 
+	* (4) Prepare KPI indicators and sum-stat
+	
+	if `kpi' == 1 {
+	    do "$sc_do_hfc/04_kpi_prepare.do"
+	}	
+
+	* (4) Prepare KPI indicators and sum-stat
+	
+	if `sumstat' == 1 {
+	    do "$sc_do_hfc/05_SumStats.do"
+	}	
+	
 	
 	* end of dofile 

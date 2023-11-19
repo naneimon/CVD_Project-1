@@ -33,11 +33,8 @@ df_dup <- df %>%
 
 # for duplicate check work 
 df_contvar <- df %>%
-  select(resp_age, bp_syst_1, bp_diast_1, bp_syst_rc_1_1, bp_diast_rc_1_1, 
-         bp_syst_rc_1_2, bp_diast_rc_1_2, bp_syst_2, bp_diast_2, bp_syst_rc_2_1, 
-         bp_diast_rc_2_1, bp_syst_rc_2_2, bp_diast_rc_2_2, bp_syst_3,	bp_diast_3, 
-         bp_syst_rc_3_1, bp_diast_rc_3_1, bp_syst_rc_3_2, bp_diast_rc_3_2, 
-         weight,	height,	blood_glucose, blood_glucose_rc_cal, bl_glucose_rpt) 
+  select(resp_age, bp_syst_1, bp_diast_1, bp_syst_2, bp_diast_2, 
+         bp_syst_3,	bp_diast_3, weight,	height,	blood_glucose_rc) 
 
 df <- df %>%
   rename(
