@@ -285,7 +285,7 @@ Task outline:
 	*/	
 	
 	lab var cf_cal_cvd_risk_yes		"CVD Risk > 10%"
-	lab var ck_cf_blood_glucose 	"Blood Blucose > 200"
+	lab var ck_cf_blood_glucose 	"Blood Glucose > 200"
 	lab var ck_cf_cal_bf_abnormal 	"At least one Average Blood Pressure measurement was abnormal."
 	lab var ck_cf_cal_syst_avg 		"Average Systolic Blood Pressure >140"
 	lab var ck_cf_cal_diast_avg 	"Average Diastolic Blood Pressure >90"
