@@ -21,7 +21,7 @@ Task outline:
 	do "$github/00_dir_setting.do"
 
 	********************************************************************************
-	* import raw data  *
+	* import raw data *
 	********************************************************************************
 	
 	use "$sc_check/cvd_screening_check.dta", clear 
@@ -143,7 +143,7 @@ Task outline:
 	note_mhist_drug_statins		Taking statins in the last 2 weeks
 	note_cal_syst_avg			Average Systolic Blood Pressure >140
 	note_cal_diast_avg			Average Diastolic Blood Pressure >90
-	note_cal_bf_abnormal		At least one time Blood Pressure measurement was abnormal. 
+	note_cal_bf_abnormal		At least one time Blood Pressure measurement was abnormal. Systolic  BP: <90 or  > 180, Diastolic  BP: <50 and >110
 	note_blood_glucose			Blood Blucose (re-check) > 200
 	note_cvd_risk_yes			CVD Risk > 10%
 	
@@ -275,7 +275,7 @@ Task outline:
 	note_mhist_drug_statins		Taking statins in the last 2 weeks
 	note_cal_syst_avg			Average Systolic Blood Pressure >140
 	note_cal_diast_avg			Average Diastolic Blood Pressure >90
-	note_cal_bf_abnormal		At least one average Blood Pressure measurement was abnormal. 
+	note_cal_bf_abnormal		At least one average Blood Pressure measurement was abnormal. Systolic  BP: <90 or  > 180, Diastolic  BP: <50 and >110
 	note_blood_glucose			Blood Blucose (re-check) > 200
 	note_cvd_risk_yes			CVD Risk > 10%
 	

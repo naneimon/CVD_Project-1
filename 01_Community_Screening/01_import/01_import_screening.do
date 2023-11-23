@@ -59,23 +59,30 @@ Task outline:
 	* as it mentioned the month number instead of minute 
 	* as a result, got duplicated study_id
 	
-	gen study_id_issue = study_id if starttime >= tc(15nov2023 00:00:00) & starttime < tc(17nov2023 00:00:00) 
+	gen study_id_issue = study_id if starttime >= tc(15nov2023 00:00:00) & starttime < tc(22nov2023 00:00:00) 
 	lab var study_id_issue "Error Study ID - month instead of minute"
 	order study_id_issue, after(study_id)
 	
-	replace study_id = substr(study_id, 1, strlen(study_id) - 2)
+	// revised the issue id obs 
+	replace study_id = substr(study_id, 1, strlen(study_id) - 2) if starttime >= tc(15nov2023 00:00:00) & starttime < tc(22nov2023 00:00:00) 
+	
+	// to replace with minute value 
 	gen minute = mm(starttime)
 	tostring minute, replace 
 	order minute, after(study_id) 
 	
 	// reconstruct the unique study_id
-	replace study_id = study_id_issue + minute 
+	replace study_id = study_id_issue + minute if starttime >= tc(15nov2023 00:00:00) & starttime < tc(22nov2023 00:00:00) 
 	
-	distinct study_id*
+	// Check the number 
+	distinct study_id_issue 
+	distinct study_id
+
+	assert `r(ndistinct)' == _N 
 	
 	drop minute
-	
-	
+
+		
 	* Save as dta file 
 	save "$sc_raw/cvd_screening_raw.dta", replace  
 
