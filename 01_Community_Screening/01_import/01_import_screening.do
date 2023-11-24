@@ -58,7 +58,7 @@ Task outline:
 	* Re-construct the study ID - the first village result with duplicate in last 2 digit 
 	* as it mentioned the month number instead of minute 
 	* as a result, got duplicated study_id
-	
+	&&
 	gen study_id_issue = study_id if starttime >= tc(15nov2023 00:00:00) & starttime < tc(22nov2023 00:00:00) 
 	lab var study_id_issue "Error Study ID - month instead of minute"
 	order study_id_issue, after(study_id)
