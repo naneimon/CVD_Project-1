@@ -28,14 +28,12 @@ Task outline:
 	
 	* Set locals
 	local progress_indicator	svy_complete vill_dummy_1 vill_dummy_2 svy_early svy_late svy_duration
-	local confirmation_visit	cf_cal_cvd_risk_yes ck_cf_blood_glucose ck_cf_cal_bf_abnormal ck_cf_cal_syst_avg ///
+	local confirmation_visit	ck_cal_confirm_visit ///
+								cf_cal_cvd_risk_yes ck_cf_blood_glucose ck_cf_cal_bf_abnormal ck_cf_cal_syst_avg ///
 								ck_cf_cal_diast_avg ck_stroke ck_heartatt ck_aspirin_d ck_statins_d ck_dasp_cf ///
 								ck_dstat_cf ck_diabetes ck_diabetes_d ck_hypertension ck_hypertension_d ///
 								ck_hpd_cf ck_ddd_cf
 					
-	
-
-
 	
 	* Set path
 	putexcel set "$sc_check/HFC/Community_Screening_Check_SumStat.xlsx", modify 
@@ -100,5 +98,25 @@ Task outline:
 	local ++row		
 	}
 
+	
+	
+	// ADD n in the sum-stat table 
+	local i = 4
+	
+	foreach var in `confirmation_visit' {
+		
+		count if `var' == 1
+		
+		putexcel set 	"$sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
+						modify sheet("confirmation_visit")
+			
+		putexcel I`i' = (`r(N)')
+		putexcel save
+		
+		local i = `i' + 2
+		
+	}
+	
+	
 		
 ****End do-file. 

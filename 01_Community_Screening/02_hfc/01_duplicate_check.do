@@ -64,6 +64,11 @@ Task outline:
 	restore 	
 
 	
+	// temporary solution for duplicate  
+	sort starttime 
+	bysort study_id: keep if _n == 1
+	bysort resp_name resp_age resp_sex resp_dad_name resp_mom_name: keep if _n == 1
+	
 	* Save as raw data 
 	save "$sc_check/cvd_screening_check.dta", replace 
 

@@ -26,6 +26,19 @@ Task outline:
 	
 	use "$sc_check/cvd_screening_check.dta", clear 
 	
+	* Check Eligability for Screening * 
+	tab cal_eligible, m 
+	destring cal_eligible, replace 
+	
+	gen ck_cal_eligible = ((resp_livenow == 1 | (resp_livenow == 0 & resp_livenext == 1)) & ///
+						   (resp_sex == 1 | ///
+						   (resp_sex == 0 & resp_age >= 50) | ///
+						   (resp_sex == 0 & resp_age < 50 & resp_preg == 0)))
+	order ck_cal_eligible, after(cal_eligible)
+	tab ck_cal_eligible, m 
+	
+	assert cal_eligible == ck_cal_eligible
+
 	****************************************************************************
 	** Confirmation Visit Calculation **
 	****************************************************************************
@@ -52,8 +65,10 @@ Task outline:
 	
 	* Create variables from parents var for CVD calculation 
 	// average BP measurement
-	gen ck_cal_syst_avg 	= (bp_syst_2 + bp_syst_3) / 2
-	gen ck_cal_diast_avg 	= (bp_diast_2 + bp_diast_3) / 2
+	gen ck_cal_syst_avg 		= (bp_syst_2 + bp_syst_3) / 2
+	replace ck_cal_syst_avg 	= .m if mi(bp_syst_2) | mi(bp_syst_3)
+	gen ck_cal_diast_avg 		= (bp_diast_2 + bp_diast_3) / 2
+	replace ck_cal_diast_avg 	= .m if mi(bp_diast_2) | mi(bp_diast_3)
 	
 	gen sbp 		= ck_cal_syst_avg
 	gen ages 		= resp_age
@@ -61,6 +76,7 @@ Task outline:
 	replace sex 	= 2 if resp_sex == 0
 	gen smallbin 	= (tobacco > 0 & !mi(tobacco))
 	gen bmi 		= weight/((height/100) ^ 2)
+	replace bmi		= .m if mi(weight) | mi(height)
 
 	
 	preserve 
@@ -97,6 +113,7 @@ Task outline:
 	gen stata_cvd_risk = stata_cvd_risk_who
 	replace stata_cvd_risk = max(stata_cvd_risk * 2, 20) if (mhist_stroke == 1 | mhist_heartatt == 1)
 	replace stata_cvd_risk = floor(stata_cvd_risk)
+	replace stata_cvd_risk = .m if ck_cal_eligible == 0
 	tab stata_cvd_risk, m 
 	
 	
@@ -212,10 +229,10 @@ Task outline:
 
 	* Medical Examination: Blood Pressure 
 	destring cf_cal_syst_avg cf_cal_diast_avg cf_cal_bf_abnormal, replace 
-	
+											
 	// average BP - calculate at CVD risk check step
-	gen ck_cf_cal_syst_avg = (ck_cal_syst_avg > 140)
-	gen ck_cf_cal_diast_avg = (ck_cal_diast_avg > 90)
+	gen ck_cf_cal_syst_avg = (ck_cal_syst_avg > 140 & !mi(ck_cal_syst_avg))
+	gen ck_cf_cal_diast_avg = (ck_cal_diast_avg > 90 & !mi(ck_cal_diast_avg))
 	
 	count if cf_cal_syst_avg != ck_cf_cal_syst_avg
 	count if cf_cal_diast_avg != ck_cf_cal_diast_avg
@@ -224,9 +241,11 @@ Task outline:
 	order ck_cf_cal_diast_avg, after(cf_cal_diast_avg) 
 	
 	
-	// abnormal value 
-	gen ck_cal_syst_avg_abn = (ck_cal_syst_avg < 90 | ck_cal_syst_avg > 180)
-	gen ck_cal_diast_avg_abn = (ck_cal_diast_avg < 50 | ck_cal_diast_avg > 110)
+	** Abnormal value 
+	gen ck_cal_syst_avg_abn = 	(ck_cal_syst_avg < 90 | ///
+								(ck_cal_syst_avg > 180 & !mi(ck_cal_syst_avg)))
+	gen ck_cal_diast_avg_abn = 	(ck_cal_diast_avg < 50 | ///
+								(ck_cal_diast_avg > 110 & !mi(ck_cal_diast_avg)))
 	
 	gen ck_cf_cal_bf_abnormal = (ck_cal_syst_avg_abn == 1 | ck_cal_diast_avg_abn == 1)
 	
@@ -238,7 +257,9 @@ Task outline:
 	destring cf_blood_glucose, replace 
 	
 	gen ck_cf_blood_glucose = (blood_glucose > 200 & !mi(blood_glucose))
-	replace ck_cf_blood_glucose = 1 if blood_glucose_rc_cal > 200 & (blood_glucose == 6666 | blood_glucose == 9999)
+	replace ck_cf_blood_glucose = 1 if 	blood_glucose_rc_cal > 200 & ///
+										!mi(blood_glucose_rc_cal) & ///
+										(blood_glucose == 6666 | blood_glucose == 9999)
 		
 	count if cf_blood_glucose != ck_cf_blood_glucose
 	
@@ -302,6 +323,22 @@ Task outline:
 	lab var ck_hpd_cf				"Anti-hypertension medication: No to follow up question or not able to present medication"
 	lab var ck_ddd_cf 				"Diabetes medication: No to follow up question or not able to present medication"
 	
+	local checks	cf_cal_cvd_risk_yes ck_cf_blood_glucose ck_cf_cal_bf_abnormal ///
+					ck_cf_cal_syst_avg ck_cf_cal_diast_avg ck_stroke ck_heartatt ///
+					ck_aspirin_d ck_statins_d ck_dasp_cf ck_dstat_cf ck_diabetes ///
+					ck_diabetes_d ck_hypertension ck_hypertension_d ck_hpd_cf ck_ddd_cf
+					
+	foreach var in `checks' {
+		
+		replace `var' = .m if ck_cal_eligible == 0 
+	}
+	
+	
+	egen ck_cal_confirm_visit_tot = rowtotal(`checks')
+	replace ck_cal_confirm_visit_tot = .m if ck_cal_eligible == 0
+	tab ck_cal_confirm_visit_tot, m 
+	
+	
 	// cal_confirm_visit
 	destring cal_confirm_visit, replace 
 	gen ck_cal_confirm_visit = (cf_cal_cvd_risk_yes == 1 | ///
@@ -322,16 +359,24 @@ Task outline:
 								ck_hpd_cf == 1 | ///
 								ck_ddd_cf == 1)
 
-	order ck_cal_confirm_visit, after(cal_confirm_visit)
+	// correction for low BP 
+	/*
+	An individual will not be eligible for a confirmatory visit if they satisfy the eligibility criteria based solely on having low blood pressure (systolic blood pressure (SBP) below 90 or diastolic blood pressure (DBP) below 50), and do not meet the other eligibility criteria.
+	*/
+	replace ck_cal_confirm_visit = 0 if (ck_cal_syst_avg < 90 | ck_cal_diast_avg <50) & ///
+										ck_cal_confirm_visit_tot == 1 & ck_cf_cal_bf_abnormal == 1 									
 	
-	count if cal_confirm_visit != ck_cal_confirm_visit
+	replace ck_cal_confirm_visit = .m if ck_cal_eligible == 0
+	order ck_cal_confirm_visit ck_cal_confirm_visit_tot, after(cal_confirm_visit)
+	
+	count if cal_confirm_visit != ck_cal_confirm_visit & (!mi(ck_cal_confirm_visit) | !mi(cal_confirm_visit))
 	
 	tab cal_confirm_visit ck_cal_confirm_visit, m
-	
+	lab var ck_cal_confirm_visit "Total eligible case for confirmatory visit"
 	
 	preserve 
 	
-		keep if cal_confirm_visit != ck_cal_confirm_visit
+		keep if cal_confirm_visit != ck_cal_confirm_visit & (!mi(ck_cal_confirm_visit) | !mi(cal_confirm_visit)) 
 		
 		if _N > 0 {
 			
@@ -340,10 +385,8 @@ Task outline:
 		}
 	
 	restore 
-	
-	// cf_cal_cvd_risk_yes ck_cf_blood_glucose ck_cf_cal_bf_abnormal ck_cf_cal_syst_avg ck_cf_cal_diast_avg ck_stroke ck_heartatt ck_aspirin_d ck_statins_d ck_dasp_cf ck_dstat_cf ck_diabetes ck_diabetes_d ck_hypertension ck_hypertension_d ck_hpd_cf ck_ddd_cf
-								
-	br bp_syst_3 bp_diast_3 ck_* cal_confirm_sum cal_mhist_dbp_no cal_mhist_ddb_no cal_mhist_dasp_no cal_mhist_dstat_no cal_confirm_medhis_sum cal_confirm_visit  ck_cal_confirm_visit if cal_confirm_visit != ck_cal_confirm_visit
+							
+	// br bp_syst_3 bp_diast_3 ck_* cal_confirm_sum cal_mhist_dbp_no cal_mhist_ddb_no cal_mhist_dasp_no cal_mhist_dstat_no cal_confirm_medhis_sum cal_confirm_visit  ck_cal_confirm_visit if cal_confirm_visit != ck_cal_confirm_visit
 	
 	gen confirmation_visit_yes = ck_cal_confirm_visit
 	lab var confirmation_visit_yes "Final List for Confirmation Visit"

@@ -48,8 +48,8 @@ Task outline:
 	replace svy_duration = round(svy_duration, 0.1)
 	lab var svy_duration "Survey Duration (minute)"
 	order svy_duration, after(endtime)
-	tab svy_duration, m 
-	hist svy_duration
+	tab svy_duration if ck_cal_eligible == 1, m 
+	hist svy_duration if ck_cal_eligible == 1 & svy_duration < 300
 	
 	* Time only var  
 	foreach var of varlist starttime endtime {
