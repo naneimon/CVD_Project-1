@@ -58,6 +58,7 @@ df %>%
   annotate("text", x = q3_val, y = 25, label = paste("Q3 =", round(q3_val, 2)), vjust = -1, size = 4, color = "purple")
   
 # duration by case type 
+# no medication questions
 df %>%
   filter(svy_duration  < 300 & ck_cal_eligible == 1) %>%
   mutate(mhist_drug_noall = ifelse(mhist_drug_noall == 1, "No Medication Questions", "At least one type medication question")) %>%
@@ -69,6 +70,7 @@ df %>%
                position=position_nudge(x=0.4), size=3.5) +
   theme(legend.position="none")
 
+# number of no medication questions
 df %>%
   filter(svy_duration  < 300 & ck_cal_eligible == 1) %>%
   ggplot(aes(mhist_drug_nocount, svy_duration, fill = factor(mhist_drug_nocount))) + 
@@ -78,3 +80,104 @@ df %>%
                aes(label=sprintf("%1.1f", ..y..)),
                position=position_nudge(x=0.4), size=3.5) +
   theme(legend.position="none")
+
+
+# Calculate counts and percentages for each category
+summary_data <- df %>%
+  filter(tobacco != "") %>%
+  mutate(tobacco = ifelse(tobacco == "No -- I do not currently smoke cigarettes", "No smoking", 
+                          ifelse(tobacco == "Yes -- every day    ", "Everyday", "Some days"))) %>%
+  group_by(tobacco) %>%
+  summarize(Count = n(), Percentage = round((n() / nrow(df)) * 100, 1))
+
+# Create the bar graph
+ggplot(summary_data, aes(x = tobacco, y = Count, fill = tobacco)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste(Count, " (", Percentage, "%)")), vjust = -0.5) +
+  labs(title = "Share of Smoking Status",
+       x = "Category",
+       y = "Count") +
+  theme_minimal()
+
+
+# smoking vs hypertension 
+summary_data <- df %>%
+  filter(tobacco != "") %>%
+  mutate(tobacco = ifelse(tobacco == "No -- I do not currently smoke cigarettes", "No smoking", 
+                          ifelse(tobacco == "Yes -- every day    ", "Everyday", "Some days")), 
+         ck_hypertension = ifelse(ck_hypertension == 1, "Hypertension history", "No hypertension history")) %>%
+  group_by(tobacco, ck_hypertension) %>%
+  summarize(Count = n(), Percentage = round((n() / nrow(df)) * 100, 1))
+
+# Create the bar graph
+ggplot(summary_data, aes(x = tobacco, y = Count, fill = as.factor(ck_hypertension))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste(Count, " (", Percentage, "%)")), vjust = -0.5, position = position_dodge(width = 0.9)) +
+  labs(title = "Comparison of Smoking Status and Hypertension Status",
+       x = "Smoking Status",
+       y = "Count",
+       fill = "Hypertension Status") +
+  theme_minimal()
+
+
+# smoking vs diabetes  
+summary_data <- df %>%
+  filter(tobacco != "") %>%
+  mutate(tobacco = ifelse(tobacco == "No -- I do not currently smoke cigarettes", "No smoking", 
+                          ifelse(tobacco == "Yes -- every day    ", "Everyday", "Some days")), 
+         ck_diabetes = ifelse(ck_diabetes == 1, "Diabetes history", "No diabetes history")) %>%
+  group_by(tobacco, ck_diabetes) %>%
+  summarize(Count = n(), Percentage = round((n() / nrow(df)) * 100, 1))
+
+# Create the bar graph
+ggplot(summary_data, aes(x = tobacco, y = Count, fill = as.factor(ck_diabetes))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste(Count, " (", Percentage, "%)")), vjust = -0.5, position = position_dodge(width = 0.9)) +
+  labs(title = "Comparison of Smoking Status and Diabetes Status",
+       x = "Smoking Status",
+       y = "Count",
+       fill = "Hypertension Status") +
+  theme_minimal()
+
+
+# smoking vs stroke  
+summary_data <- df %>%
+  filter(tobacco != "") %>%
+  mutate(tobacco = ifelse(tobacco == "No -- I do not currently smoke cigarettes", "No smoking", 
+                          ifelse(tobacco == "Yes -- every day    ", "Everyday", "Some days")), 
+         ck_stroke = ifelse(ck_stroke == 1, "Stroke history", "No stroke history")) %>%
+  group_by(tobacco, ck_stroke) %>%
+  summarize(Count = n(), Percentage = round((n() / nrow(df)) * 100, 1))
+
+# Create the bar graph
+ggplot(summary_data, aes(x = tobacco, y = Count, fill = as.factor(ck_stroke))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste(Count, " (", Percentage, "%)")), vjust = -0.5, position = position_dodge(width = 0.9)) +
+  labs(title = "Comparison of Smoking Status and Stroke Status",
+       x = "Smoking Status",
+       y = "Count",
+       fill = "Hypertension Status") +
+  theme_minimal()
+
+
+# smoking vs heart attack  
+summary_data <- df %>%
+  filter(tobacco != "") %>%
+  mutate(tobacco = ifelse(tobacco == "No -- I do not currently smoke cigarettes", "No smoking", 
+                          ifelse(tobacco == "Yes -- every day    ", "Everyday", "Some days")), 
+         ck_heartatt = ifelse(ck_heartatt == 1, "Heart attack history", "No Heart attack history")) %>%
+  group_by(tobacco, ck_heartatt) %>%
+  summarize(Count = n(), Percentage = round((n() / nrow(df)) * 100, 1))
+
+# Create the bar graph
+ggplot(summary_data, aes(x = tobacco, y = Count, fill = as.factor(ck_heartatt))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste(Count, " (", Percentage, "%)")), vjust = -0.5, position = position_dodge(width = 0.9)) +
+  labs(title = "Comparison of Smoking Status and Heart Attack Status",
+       x = "Smoking Status",
+       y = "Count",
+       fill = "Hypertension Status") +
+  theme_minimal()
+
+
+

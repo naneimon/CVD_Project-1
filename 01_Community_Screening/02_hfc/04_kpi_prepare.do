@@ -170,6 +170,29 @@ Task outline:
 	tab no_mhistdrug_bg, m 
 	
 	
+	** BP Category **
+	// >= 140/90  <140/90  ; <130/85  ;   <120/80
+	gen bp_high_140_90 = (ck_cal_syst_avg >= 140 & !mi(ck_cal_syst_avg) & ck_cal_diast_avg >= 90 & !mi(ck_cal_diast_avg))
+	replace bp_high_140_90 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
+	lab var bp_high_140_90 "BP >= 140/90"
+	tab bp_high_140_90, m 
+	
+	gen bp_low_140_90 = (ck_cal_syst_avg < 140 & ck_cal_diast_avg < 90)
+	replace bp_low_140_90 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
+	lab var bp_low_140_90 "BP < 140/90"
+	tab bp_low_140_90, m 
+
+	gen bp_low_130_85 = (ck_cal_syst_avg < 130 & ck_cal_diast_avg < 85)
+	replace bp_low_130_85 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
+	lab var bp_low_130_85 "BP <130/85"
+	tab bp_low_130_85, m 
+
+	gen bp_low_120_80 = (ck_cal_syst_avg < 120 & ck_cal_diast_avg < 80)
+	replace bp_low_120_80 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
+	lab var bp_low_120_80 "BP <120/80"
+	tab bp_low_120_80, m 
+
+	
 	* Export csv file to use in R-shiny work
 	export delimited using "$shiny/community_screening.csv", replace 
 	export delimited using "$shiny/cvd_screening_monitoring/community_screening.csv", replace 
