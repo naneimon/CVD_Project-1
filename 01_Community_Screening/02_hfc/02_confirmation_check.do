@@ -253,14 +253,51 @@ Task outline:
 
 	order ck_cf_cal_bf_abnormal, after(cf_cal_bf_abnormal)
 
+	// Medic referal cases check 
+	gen ck_bp_medic_refer = (ck_cf_cal_bf_abnormal == 1)
+	replace ck_bp_medic_refer = .m if ck_cal_eligible == 0
+	lab var ck_bp_medic_refer "Respondent who average BP required consultation with Medic/Clinic"
+	order ck_bp_medic_refer, after(ck_cf_cal_bf_abnormal)
+	tab ck_bp_medic_refer, m 
+	
+	tab bp_medic_3, m 
+	
+	count if ck_bp_medic_refer == bp_medic_3 & ck_bp_medic_refer == 1
+	
+	
 	* Medical Examination: Blood Pressure 
+	// check require obs for blood glucose measurement
+	gen ck_blood_glucose_yes = ((bmi > 23 & !mi(bmi)) | ///
+								ck_hypertension == 1 | ///
+								ck_diabetes == 1 | ///
+								ck_stroke == 1 | ///
+								ck_heartatt == 1 | ///
+								ck_hypertension_d == 1 | ///
+								ck_diabetes_d == 1 | ///
+								ck_cf_cal_syst_avg == 1 | ///
+								ck_cf_cal_diast_avg == 1 )
+	replace ck_blood_glucose_yes = .m if ck_cal_eligible == 0
+	replace ck_blood_glucose_yes = .m if (mi(bmi) & mi(ck_hypertension) & ///
+								          mi(ck_diabetes) & mi(ck_stroke) & ///
+										  mi(ck_heartatt) & mi(ck_hypertension_d) & ///
+										  mi(ck_diabetes_d) & ///
+										  mi(ck_cf_cal_syst_avg) & mi(ck_cf_cal_diast_avg))
+	order ck_blood_glucose_yes, after(cal_bmi)
+	count if ck_blood_glucose_yes == 1
+	local ck_bg = `r(N)'
+	count if !mi(blood_glucose)
+	
+	assert `ck_bg' == `r(N)'
+
+	// blood glucose value check 
 	destring cf_blood_glucose, replace 
 	
 	gen ck_cf_blood_glucose = (blood_glucose > 200 & !mi(blood_glucose))
 	replace ck_cf_blood_glucose = 1 if 	blood_glucose_rc_cal > 200 & ///
 										!mi(blood_glucose_rc_cal) & ///
 										(blood_glucose == 6666 | blood_glucose == 9999)
-		
+	tab ck_cf_blood_glucose, m 
+	
 	count if cf_blood_glucose != ck_cf_blood_glucose
 	
 	order ck_cf_blood_glucose, after(cf_blood_glucose)
@@ -322,6 +359,8 @@ Task outline:
 	lab var ck_hypertension_d 		"Anti-hypertension medication in the last 2 weeks"
 	lab var ck_hpd_cf				"Anti-hypertension medication: No to follow up question or not able to present medication"
 	lab var ck_ddd_cf 				"Diabetes medication: No to follow up question or not able to present medication"
+	
+	lab var ck_blood_glucose_yes 	"Respondent required Blood Glucose measurement"
 	
 	local checks	cf_cal_cvd_risk_yes ck_cf_blood_glucose ck_cf_cal_bf_abnormal ///
 					ck_cf_cal_syst_avg ck_cf_cal_diast_avg ck_stroke ck_heartatt ///
