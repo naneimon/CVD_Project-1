@@ -30,7 +30,7 @@ set maxvar 32767
 	if "`user'" == "Nicholus Tint Zaw" {
 		* Nicholus Directory
 		
-		global box			"C:\Users\Nicholus Tint Zaw\Box\Myanmar CVD Study 2023-2024\Feasibility Study"
+		global box			"C:\Users\Nicholus Tint Zaw\Dropbox\CVD\DATASET"
 		global googledrive	""
 		global github		"C:\Users\Nicholus Tint Zaw\Documents\GitHub\CVD_Project"
 		
