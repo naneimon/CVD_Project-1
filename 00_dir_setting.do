@@ -30,8 +30,13 @@ set maxvar 32767
 	if "`user'" == "Nicholus Tint Zaw" {
 		* Nicholus Directory
 		
-		global box			"C:\Users\Nicholus Tint Zaw\Dropbox\CVD\DATASET"
-		global googledrive	""
+		// PII Data 
+		global dropbox		"C:\Users\Nicholus Tint Zaw\Dropbox\CVD\DATASET"
+		
+		// Non-PII Data
+		global box			"C:\Users\Nicholus Tint Zaw\Box\Myanmar CVD Study 2023-2024\Feasibility Study"
+		
+		// Dofiles 
 		global github		"C:\Users\Nicholus Tint Zaw\Documents\GitHub\CVD_Project"
 		
 	}
@@ -42,6 +47,10 @@ set maxvar 32767
 	else if "`user'" == "XX" {
 		* CPI team Directory
 		
+		global dropbox		""
+		global box			""
+		global github		""
+		
 	}
 
 
@@ -50,13 +59,21 @@ set maxvar 32767
 	****************************************************************************
 
 	** (1) Community Screening **
-	** DATA 
-	global screen			"$box/01_Community_Screening/"
+	** PII DATA 
+	global screen			"$dropbox/01_Community_Screening/"
 	global sc_raw			"$screen/01_raw"
 	global sc_check			"$screen/02_check"
 	global sc_clean			"$screen/03_cleaned"
 	global sc_constr		"$screen/04_construct"
 	global sc_analyze		"$screen/05_analysis"
+
+	** Non-PII DATA 
+	global np_screen		"$box/01_Community_Screening/"
+	global np_sc_raw		"$np_screen/01_raw"
+	global np_sc_check		"$np_screen/02_check"
+	global np_sc_clean		"$np_screen/03_cleaned"
+	global np_sc_constr		"$np_screen/04_construct"
+	global np_sc_analyze	"$np_screen/05_analysis"
 	
 	** DOFILE 
 	global screen_do		"$github/01_Community_Screening/"
