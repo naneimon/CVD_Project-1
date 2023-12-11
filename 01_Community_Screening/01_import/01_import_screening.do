@@ -100,6 +100,13 @@ Task outline:
 
 		
 	* Save as dta file 
+	// PII data
 	save "$sc_raw/cvd_screening_raw.dta", replace  
+	
+	// non PII data
+	// drop PII
+	drop resp_name resp_dad_name resp_mom_name
+	save "$np_sc_raw/cvd_screening_raw_nopii.dta", replace  
+	
 
 	* end of dofile 

@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$sc_check/cvd_screening_check.dta", clear 
+	use "$np_sc_check/cvd_screening_check.dta", clear 
 		
 	****************************************************************************
 	** KPI indicators **
@@ -78,7 +78,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$np_sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
 								sheet("Survey Before 7 AM") firstrow(varlabels) sheetmodify
 		}
 	
@@ -95,7 +95,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$np_sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
 								sheet("Survey After 6 PM") firstrow(varlabels) sheetmodify
 		}
 	
@@ -199,12 +199,6 @@ Task outline:
 	
 	
 	* save as updated dataset 
-	save "$sc_check/cvd_screening_check.dta", replace  
-
-	
-	// drop PII
-	drop resp_name resp_dad_name resp_mom_name
-	save "$sc_check/No_PII/cvd_screening_check_nopii.dta", replace  
-
+	save "$np_sc_check/cvd_screening_check.dta", replace  
 	
 	* end of dofile 

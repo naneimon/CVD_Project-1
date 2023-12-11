@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$sc_check/cvd_screening_check.dta", clear 
+	use "$np_sc_check/cvd_screening_check.dta", clear 
 		
 	****************************************************************************
 	** Confirmation Visit Preloaded File **
@@ -32,6 +32,13 @@ Task outline:
 	
 	// keep only required obs 
 	keep if confirmation_visit_yes == 1
+	
+	* get personal info data 
+	merge 1:1 study_id using 	"$sc_check/cvd_screening_check_nodup.dta", ///
+								keepusing(resp_name resp_dad_name resp_mom_name) 
+	
+	keep if _merge == 3
+	drop _merge 
 	
 	// keep only required variable 
 	local cf_var	demo_town demo_clinic demo_vill study_id study_id_issue resp_name ///

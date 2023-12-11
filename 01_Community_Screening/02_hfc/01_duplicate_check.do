@@ -37,7 +37,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$sc_check/HFC/Community_Screening_Check_Duplicate.xlsx", ///
 								sheet("Duplicated by ID") firstrow(varlabels) sheetmodify
 		}
 	
@@ -57,12 +57,11 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$sc_check/HFC/Community_Screening_Check_Duplicate.xlsx", ///
 								sheet("Duplicated by Personal info") firstrow(varlabels) sheetmodify
 		}
 	
 	restore 	
-
 	
 	// temporary solution for duplicate  
 	sort starttime 
@@ -70,6 +69,6 @@ Task outline:
 	bysort resp_name resp_age resp_sex resp_dad_name resp_mom_name: keep if _n == 1
 	
 	* Save as raw data 
-	save "$sc_check/cvd_screening_check.dta", replace 
+	save "$sc_check/cvd_screening_check_nodup.dta", replace 
 
 	* end of dofile 

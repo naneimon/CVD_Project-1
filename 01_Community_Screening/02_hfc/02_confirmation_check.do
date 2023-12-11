@@ -24,7 +24,7 @@ Task outline:
 	* import raw data *
 	********************************************************************************
 	
-	use "$sc_check/cvd_screening_check.dta", clear 
+	use "$np_sc_raw/cvd_screening_raw_nopii.dta", clear 
 	
 	* Check Eligability for Screening * 
 	tab cal_eligible, m 
@@ -104,7 +104,7 @@ Task outline:
 	
 	restore 
 	
-	merge 1:1 _uuid using `cvdcheck'
+	merge 1:1 _uuid using `cvdcheck', assert(3) nogen 
 	
 	
 	** Update the CVD risk value to adjust the Confirmatory Visit Status 
@@ -130,7 +130,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$np_sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
 								sheet("CVD Risk Error") firstrow(varlabels) sheetmodify
 		}
 	
@@ -419,7 +419,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
+			export excel using "$np_sc_check/HFC/Community_Screening_Check_Outputs.xlsx", ///
 								sheet("Confirmatory Visit Error") firstrow(varlabels) sheetmodify
 		}
 	
@@ -432,6 +432,6 @@ Task outline:
 	
 	
 	* Save as raw data 
-	save "$sc_check/cvd_screening_check.dta", replace 
+	save "$np_sc_check/cvd_screening_check.dta", replace 
 	
 	* end of dofile 
