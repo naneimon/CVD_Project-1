@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$np_sc_check/cvd_screening_check.dta", clear 
+	use "$np_sc_clean/cvd_screening_cleaned.dta", clear 
 		
 	****************************************************************************
 	** KPI indicators **
@@ -101,6 +101,51 @@ Task outline:
 	
 	restore 
 	
+	
+	****************************************************************************
+	** Independent Variables **
+	****************************************************************************
+	// resp_age
+	tab resp_age, m 
+
+	// tobacco
+	gen smoking_yes = (tobacco > 0 & !mi(tobacco))
+	replace smoking_yes = .m if mi(tobacco)
+	order smoking_yes, after(tobacco)
+	lab var smoking_yes "Smoking status - yes"
+	tab smoking_yes, m 
+	
+	// expected hypertension medication 
+	// if(${cf_mhist_hypertension}=1 or ${cf_mhist_drug_bp}=1 or ${cal_bp_pass_1}=1 or ${cal_bp_pass_2}=1,1,0) - need to revise the XLS code
+	gen expt_hypertension = (ck_hypertension == 1 | ///
+							 ck_hypertension_d == 1 | ///
+							 ck_cf_cal_syst_avg == 1 | ///
+							 ck_cf_cal_diast_avg == 1)
+	lab var expt_hypertension "Expected hypertension medication"
+	replace expt_hypertension = .m if ck_cal_eligible == 0
+	tab expt_hypertension, m 
+	
+	
+	// expected diabetes 
+	// if(${cf_mhist_diabetes}=1 or ${cf_mhist_drug_bsug}=1 or ${cal_rbs_yes}=1, 1, 0)
+	gen expt_diabetes = (ck_diabetes == 1 | ///
+						 ck_diabetes_d == 1 | ///
+						 ck_cf_blood_glucose == 1) 
+	lab var expt_diabetes "Expected diabetes"
+	replace expt_diabetes = .m if ck_cal_eligible == 0
+	tab expt_diabetes, m 
+	
+	
+	// expected statin medication
+	// (${cal_hypertension}=1 and ${cal_diabetes}=1) or ${cal_diabetes}=1 or ${cal_angina_yes}=1 or ${cal_mi_stroke_hist}=1
+	gen expt_statin = (expt_hypertension == 1 | ///
+					   expt_diabetes == 1 | ///
+					   ck_stroke == 1 | ///
+					   ck_heartatt == 1)
+	lab var expt_statin "expected statin medication"
+	replace expt_statin = .m if ck_cal_eligible == 0
+	tab expt_statin, m 
+	
 	****************************************************************************
 	** CASE - category **
 	****************************************************************************
@@ -172,33 +217,74 @@ Task outline:
 	
 	** BP Category **
 	// >= 140/90  <140/90  ; <130/85  ;   <120/80
-	gen bp_high_140_90 = (ck_cal_syst_avg >= 140 & !mi(ck_cal_syst_avg) & ck_cal_diast_avg >= 90 & !mi(ck_cal_diast_avg))
+	gen bp_high_140_90 = ((ck_cal_syst_avg >= 140 & !mi(ck_cal_syst_avg)) | ///
+						  (ck_cal_diast_avg >= 90 & !mi(ck_cal_diast_avg)))
 	replace bp_high_140_90 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
 	lab var bp_high_140_90 "BP >= 140/90"
 	tab bp_high_140_90, m 
 	
-	gen bp_low_140_90 = (ck_cal_syst_avg < 140 & ck_cal_diast_avg < 90)
+	gen bp_low_140_90 = (ck_cal_syst_avg < 140 | ck_cal_diast_avg < 90)
 	replace bp_low_140_90 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
 	lab var bp_low_140_90 "BP < 140/90"
 	tab bp_low_140_90, m 
 
-	gen bp_low_130_85 = (ck_cal_syst_avg < 130 & ck_cal_diast_avg < 85)
+	gen bp_low_130_85 = (ck_cal_syst_avg < 130 | ck_cal_diast_avg < 85)
 	replace bp_low_130_85 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
 	lab var bp_low_130_85 "BP <130/85"
 	tab bp_low_130_85, m 
 
-	gen bp_low_120_80 = (ck_cal_syst_avg < 120 & ck_cal_diast_avg < 80)
+	gen bp_low_120_80 = (ck_cal_syst_avg < 120 | ck_cal_diast_avg < 80)
 	replace bp_low_120_80 = .m if mi(ck_cal_syst_avg) | mi(ck_cal_diast_avg)
 	lab var bp_low_120_80 "BP <120/80"
 	tab bp_low_120_80, m 
 
 	
+	* BP category with hypertension medical history + no medication history 
+	foreach var of varlist bp_high_140_90 bp_low_140_90 bp_low_130_85 bp_low_120_80 {
+		
+		local labvar : variable label `var'
+		gen `var'_hpm = `var' if ck_hypertension == 1 & ck_hypertension_d == 0
+		replace `var'_hpm = .m if mi(`var'_hpm)
+		lab var `var'_hpm "`labvar': hypertension medical history but no medication history"
+		tab `var'_hpm
+		
+	}
+
+	
+	foreach var of varlist bp_high_140_90 bp_low_140_90 bp_low_130_85 bp_low_120_80 {
+		
+		local labvar : variable label `var'
+		gen `var'_hpm_only = `var' if 	 cf_cal_cvd_risk_yes == 0 & ///
+										 ck_cf_blood_glucose == 0 & ///
+										 ck_cf_cal_bf_abnormal == 0 & ///
+										 ck_cf_cal_syst_avg == 0 & ///
+										 ck_cf_cal_diast_avg == 0 & ///
+										 ck_stroke == 0 & ///
+										 ck_heartatt == 0 & ///
+										 ck_aspirin_d == 0 & ///
+										 ck_statins_d == 0 & ///
+										 ck_dasp_cf == 0 & ///
+										 ck_dstat_cf == 0 & ///
+										 ck_diabetes == 0 & ///
+										 ck_diabetes_d == 0 & ///
+										 ck_hypertension == 1 & ///
+										 ck_hypertension_d == 0 & ///
+										 ck_hpd_cf == 0 & ///
+										 ck_ddd_cf == 0
+		replace `var'_hpm_only = .m if mi(`var'_hpm_only)
+		lab var `var'_hpm_only "`labvar': hypertension medical history only"
+		tab `var'_hpm_only
+		
+	}
+	
+										 
+										 
 	* Export csv file to use in R-shiny work
 	export delimited using "$shiny/community_screening.csv", replace 
 	export delimited using "$shiny/cvd_screening_monitoring/community_screening.csv", replace 
 	
 	
 	* save as updated dataset 
-	save "$np_sc_check/cvd_screening_check.dta", replace  
+	save "$np_sc_constr/cvd_screening_constract.dta", replace  
 	
 	* end of dofile 

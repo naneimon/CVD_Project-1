@@ -60,7 +60,7 @@ set maxvar 32767
 
 	** (1) Community Screening **
 	** PII DATA 
-	global screen			"$dropbox/01_Community_Screening/"
+	global screen			"$dropbox/01_Community_Screening"
 	global sc_raw			"$screen/01_raw"
 	global sc_check			"$screen/02_check"
 	global sc_clean			"$screen/03_cleaned"
@@ -68,7 +68,7 @@ set maxvar 32767
 	global sc_analyze		"$screen/05_analysis"
 
 	** Non-PII DATA 
-	global np_screen		"$box/01_Community_Screening/"
+	global np_screen		"$box/01_Community_Screening"
 	global np_sc_raw		"$np_screen/01_raw"
 	global np_sc_check		"$np_screen/02_check"
 	global np_sc_clean		"$np_screen/03_cleaned"
@@ -76,47 +76,81 @@ set maxvar 32767
 	global np_sc_analyze	"$np_screen/05_analysis"
 	
 	** DOFILE 
-	global screen_do		"$github/01_Community_Screening/"
-	global sc_do_raw		"$screen_do/01_raw"
+	global screen_do		"$github/01_Community_Screening"
+	global sc_do_raw		"$screen_do/01_import"
 	global sc_do_hfc		"$screen_do/02_hfc"
 	global sc_do_clean		"$screen_do/03_clean"
 	global sc_do_constr		"$screen_do/04_construct"
 	global sc_do_analyze	"$screen_do/05_analysis"
 	
 	** (2) 02_Confirmation Tool **
-	** DATA 
-	global confirm			"$box/02_Confirmation_Tool/"
+	** PII DATA 
+	global confirm			"$dropbox/02_Confirmation_Tool"
 	global cf_raw			"$confirm/01_raw"
 	global cf_check			"$confirm/02_check"
 	global cf_clean			"$confirm/03_cleaned"
 	global cf_constr		"$confirm/04_construct"
 	global cf_analyze		"$confirm/05_analysis"
 	
+	** Non-PII DATA 
+	global np_confirm			"$box/02_Confirmation_Tool"
+	global np_cf_raw			"$np_confirm/01_raw"
+	global np_cf_check			"$np_confirm/02_check"
+	global np_cf_clean			"$np_confirm/03_cleaned"
+	global np_cf_constr			"$np_confirm/04_construct"
+	global np_cf_analyze		"$np_confirm/05_analysis"
+	
 	** DOFILE 
-	global confirm_do		"$github/02_Confirmation_Tool/"
-	global cf_do_raw		"$confirm_do/01_raw"
+	global confirm_do		"$github/02_Confirmation_Tool"
+	global cf_do_raw		"$confirm_do/01_import"
 	global cf_do_hfc		"$confirm_do/02_hfc"
 	global cf_do_clean		"$confirm_do/03_clean"
 	global cf_do_constr		"$confirm_do/04_construct"
 	global cf_do_analyze	"$confirm_do/05_analysis"
 
 	** (3) 03_Confirmation Additional Question **
-	** DATA 
-	global addquest			"$box/03_Confirmation_Additional_Question/"
+	** PII DATA 
+	global addquest			"$dropbox/03_Confirmation_Additional_Question"
 	global addq_raw			"$addquest/01_raw"
 	global addq_check		"$addquest/02_check"
 	global addq_clean		"$addquest/03_cleaned"
 	global addq_constr		"$addquest/04_construct"
 	global addq_analyze		"$addquest/05_analysis"
 	
+	** Non-PII DATA  
+	global np_addquest			"$box/03_Confirmation_Additional_Question"
+	global np_addq_raw			"$np_addquest/01_raw"
+	global np_addq_check		"$np_addquest/02_check"
+	global np_addq_clean		"$np_addquest/03_cleaned"
+	global np_addq_constr		"$np_addquest/04_construct"
+	global np_addq_analyze		"$np_addquest/05_analysis"
+
 	** DOFILE 
-	global addquest_do		"$github/03_Confirmation_Additional_Question/"
-	global addq_do_raw		"$addquest_do/01_raw"
+	global addquest_do		"$github/03_Confirmation_Additional_Question"
+	global addq_do_raw		"$addquest_do/01_import"
 	global addq_do_hfc		"$addquest_do/02_hfc"
 	global addq_do_clean	"$addquest_do/03_clean"
 	global addq_do_constr	"$addquest_do/04_construct"
 	global addq_do_analyze	"$addquest_do/05_analysis"
 	
+	
+	** (4) COMBINED DATASET 
+	** PII DATA  
+	global comb				"$dropbox/04_Combined_Screening_Confirmation"
+	global comb_clean		"$comb/01_cleaned"
+	global comb_constr		"$comb/02_construct"
+	global comb_analyze		"$comb/03_analysis"
+
+	** Non-PII DATA  
+	global np_comb				"$box/04_Combined_Screening_Confirmation"
+	global np_comb_clean		"$np_comb/01_cleaned"
+	global np_comb_constr		"$np_comb/02_construct"
+	global np_comb_analyze		"$np_comb/03_analysis"
+
+	** DOFILE 
+	global cb_do_clean			"$addquest_do/01_clean"
+	global cb_do_constr			"$addquest_do/02_construct"
+	global cb_do_analyze		"$addquest_do/03_analysis"
 	
 	** (5) 05_CVD_Screening_Dashboard
 	global shiny			"$github/05_CVD_Screening_Dashboard"

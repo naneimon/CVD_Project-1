@@ -118,7 +118,7 @@ Task outline:
 	
 	
 	gen cvd_final_check = (cal_cvd_risk != stata_cvd_risk)
-	replace cvd_final_check = .m if mi(cal_cvd_risk) | mi(stata_cvd_risk)
+	replace cvd_final_check = .m if mi(cal_cvd_risk) & mi(stata_cvd_risk)
 	lab var cvd_final_check "CVD Risk Final Result Check"
 	tab cvd_final_check, m 	
 	
@@ -304,11 +304,11 @@ Task outline:
 	
 	* CVD risk > 10 
 	destring cal_cvd_risk_yes, replace 
+	//replace cal_cvd_risk_yes = 0 if mi(cal_cvd_risk_yes)
 	
-	gen cf_cal_cvd_risk_yes = (stata_cvd_risk > 10 & !mi(cal_cvd_risk_yes))
+	gen cf_cal_cvd_risk_yes = (stata_cvd_risk > 10 & !mi(stata_cvd_risk))
 	order cf_cal_cvd_risk_yes, after(cal_cvd_risk_yes)
 	tab1 cf_cal_cvd_risk_yes cal_cvd_risk_yes, m 
-
 	
 	* Final Check on Confirmation Visit Eligibility 
 	* note: used the revised cvd risk calculation instead of create new one in caluclation 
@@ -410,6 +410,8 @@ Task outline:
 	
 	count if cal_confirm_visit != ck_cal_confirm_visit & (!mi(ck_cal_confirm_visit) | !mi(cal_confirm_visit))
 	
+	// replace cal_confirm_visit = 0 if mi(cal_confirm_visit)
+	
 	tab cal_confirm_visit ck_cal_confirm_visit, m
 	lab var ck_cal_confirm_visit "Total eligible case for confirmatory visit"
 	
@@ -429,6 +431,7 @@ Task outline:
 	
 	gen confirmation_visit_yes = ck_cal_confirm_visit
 	lab var confirmation_visit_yes "Final List for Confirmation Visit"
+	tab confirmation_visit_yes, m // 138 obs
 	
 	
 	* Save as raw data 

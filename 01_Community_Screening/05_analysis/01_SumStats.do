@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$sc_check/cvd_screening_check.dta", clear 
+	use "$np_sc_constr/cvd_screening_constract.dta", clear 
 	
 	
 	* Set locals
@@ -33,15 +33,17 @@ Task outline:
 								ck_cf_cal_diast_avg ck_stroke ck_heartatt ck_aspirin_d ck_statins_d ck_dasp_cf ///
 								ck_dstat_cf ck_diabetes ck_diabetes_d ck_hypertension ck_hypertension_d ///
 								ck_hpd_cf ck_ddd_cf
-					
+	local bp_figure				bp_high_140_90 bp_low_140_90 bp_low_130_85 bp_low_120_80 /// 
+								bp_high_140_90_hpm bp_low_140_90_hpm bp_low_130_85_hpm bp_low_120_80_hpm ///
+								bp_high_140_90_hpm_only bp_low_140_90_hpm_only bp_low_130_85_hpm_only bp_low_120_80_hpm_only
 	
 	* Set path
 	putexcel set "$sc_check/HFC/Community_Screening_Check_SumStat.xlsx", modify 
 	
 	* Loop over categories					
-	foreach category in progress_indicator confirmation_visit {
+	foreach category in progress_indicator confirmation_visit bp_figure {
 		
-		putexcel set 	"$sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
+		putexcel set 	"$np_sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
 						modify sheet("`category'") // remember to specify the full path
 			
 		/*
@@ -107,7 +109,7 @@ Task outline:
 		
 		count if `var' == 1
 		
-		putexcel set 	"$sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
+		putexcel set 	"$np_sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
 						modify sheet("confirmation_visit")
 			
 		putexcel I`i' = (`r(N)')
@@ -117,6 +119,21 @@ Task outline:
 		
 	}
 	
+	// ADD n in the sum-stat table 
+	local i = 4
 	
+	foreach var in `bp_figure' {
+		
+		count if `var' == 1
+		
+		putexcel set 	"$np_sc_check/HFC/Community_Screening_Check_SumStat.xlsx", ///
+						modify sheet("bp_figure")
+			
+		putexcel I`i' = (`r(N)')
+		putexcel save
+		
+		local i = `i' + 2
+		
+	}
 		
 ****End do-file. 
