@@ -401,7 +401,19 @@ Task outline:
 	
 	count if ck_qualify != cal_qualify // 4 obs 
 	
-	// br ck_qualify cal_qualify ck_mi_stroke_hist ck_cvd_hist cf_cal_cvd_risk_yes ck_hypertension ck_diabetes cal_mi_stroke_hist cal_cvd_hist cal_hypertension cal_diabetes cal_cvd_risk_yes cal_qualify_sum if ck_qualify != cal_qualify
+/*	// manual check
+	br 	study_id /// 
+		ck_qualify cal_qualify ///
+		ck_mi_stroke_hist ck_cvd_hist cf_cal_cvd_risk_yes ck_hypertension ck_diabetes ///
+		cal_mi_stroke_hist cal_cvd_hist cal_hypertension cal_diabetes cal_cvd_risk_yes ///
+		cf_mhist_hypertension cf_mhist_drug_bp /// 
+		mhist_hypertension mhist_drug_bp ///
+		s_cal_syst_avg s_cal_diast_avg ///
+		ck_cal_syst_avg ck_cal_diast_avg ///
+		cal_syst_avg cal_diast_avg ///
+		ck_bp_pass_1 ck_bp_pass_2 cal_bp_pass_1 cal_bp_pass_2 ///
+		if ck_qualify != cal_qualify
+*/
 	
 	preserve 
 	
