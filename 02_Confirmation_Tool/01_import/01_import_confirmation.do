@@ -88,11 +88,13 @@ Task outline:
 			* Save as dta file 
 			// PII data
 			save "$cf_raw/cvd_confirmation_raw.dta", replace 
+			export excel using "$cf_raw/cvd_confirmation_raw.xlsx", sheet("confirmation") firstrow(variables) replace
 			
 			// non PII data
 			// drop PII
 			drop `pii'
 			save "$np_cf_raw/cvd_confirmation_raw_nopii.dta", replace
+			export excel using "$np_cf_raw/cvd_confirmation_raw.xlsx", sheet("confirmation") firstrow(variables) replace
 
 			* Save as dta file 
 			

@@ -24,6 +24,9 @@ Task outline:
 	********************************************************************************
 	
 	use "$np_sc_clean/cvd_screening_cleaned.dta", clear 
+	
+	ds 
+	local varlist `r(varlist)'
 		
 	****************************************************************************
 	** KPI indicators **
@@ -277,7 +280,6 @@ Task outline:
 		
 	}
 	
-										 
 										 
 	* Export csv file to use in R-shiny work
 	export delimited using "$shiny/community_screening.csv", replace 

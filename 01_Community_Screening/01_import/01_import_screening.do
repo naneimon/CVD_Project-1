@@ -102,11 +102,12 @@ Task outline:
 	* Save as dta file 
 	// PII data
 	save "$sc_raw/cvd_screening_raw.dta", replace  
+	export excel using "$sc_raw/cvd_screening_raw.xlsx", sheet("screening") firstrow(variables) replace 
 	
 	// non PII data
 	// drop PII
 	drop resp_name resp_dad_name resp_mom_name
 	save "$np_sc_raw/cvd_screening_raw_nopii.dta", replace  
-	
+	export excel using "$np_sc_raw/cvd_screening_raw_nopii.xlsx", sheet("screening") firstrow(variables) replace 
 
 	* end of dofile 

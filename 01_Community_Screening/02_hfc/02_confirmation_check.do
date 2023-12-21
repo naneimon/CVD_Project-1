@@ -229,7 +229,8 @@ Task outline:
 
 	* Medical Examination: Blood Pressure 
 	destring cf_cal_syst_avg cf_cal_diast_avg cf_cal_bf_abnormal, replace 
-											
+	
+	order ck_cal_syst_avg ck_cal_diast_avg, after(bp_confirm_3)
 	// average BP - calculate at CVD risk check step
 	gen ck_cf_cal_syst_avg = (ck_cal_syst_avg > 140 & !mi(ck_cal_syst_avg))
 	gen ck_cf_cal_diast_avg = (ck_cal_diast_avg > 90 & !mi(ck_cal_diast_avg))

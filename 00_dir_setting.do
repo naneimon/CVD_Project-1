@@ -31,7 +31,7 @@ set maxvar 32767
 		* Nicholus Directory
 		
 		// PII Data 
-		global dropbox		"C:\Users\Nicholus Tint Zaw\Dropbox\CVD\DATASET"
+		global dropbox		"C:\Users\Nicholus Tint Zaw\Dropbox\CVD\01_workflow"
 		
 		// Non-PII Data
 		global box			"C:\Users\Nicholus Tint Zaw\Box\Myanmar CVD Study 2023-2024\Feasibility Study"

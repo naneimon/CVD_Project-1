@@ -34,11 +34,11 @@ Task outline:
 	
 	preserve 
 	
-		use "$np_addq_raw/cvd_confirmation_additional_questions_cleaned.dta", clear 
+		use "$np_addq_clean/cvd_confirmation_additional_questions_cleaned.dta", clear 
 		
 		gen confirmation_additional = 1 
 		
-		keep study_id resp_confirm - end_note_1 confirmation_additional
+		// keep study_id resp_confirm - end_note_1 confirmation_additional
 		
 		tempfile confirmation_additional_data
 		save `confirmation_additional_data', replace 
@@ -55,6 +55,13 @@ Task outline:
 	* Merge with Screening Construct Data * 
 	
 	use "$np_sc_constr/cvd_screening_constract.dta", clear 
+	
+	* rename variable 
+ 	rename * s_* // added s_ prefix to distinguished with confirmation visit data
+	
+	rename s_study_id study_id
+	rename s_confirmation_visit_yes confirmation_visit_yes
+	rename s_cal_confirm_visit cal_confirm_visit
 	
 	gen screening_tool = 1
 	
@@ -86,12 +93,20 @@ Task outline:
 	replace consent_noaddquest = .m if mi(consent) & mi(confirmation_additional)
 	lab var consent_noaddquest "Consented for enrollment but no additional question data"
 	tab consent_noaddquest, m 
+
+	* no consent but additional question data 
+	gen addquest_consent = (mi(consent)& confirmation_additional == 1)
+	replace addquest_consent = .m if mi(consent) & mi(confirmation_additional)
+	lab var addquest_consent "Additional question data but not Consented"
+	tab addquest_consent, m 
 	
-	* Save as raw data 
+	* Save as combined cleaned data 
 	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
 	
+	* codebook 
+	codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
 	
-	
+
 	****************************************************************************
 	****************************************************************************
 	** Export as excel file - PII DATA 
@@ -126,6 +141,8 @@ Task outline:
 		putexcel B15 = "Matching Issue", bold
 		putexcel B16 = "Missing: Eligible for Confirmation but Not Surveyed Yet with Confirmation Tools"
 		putexcel B17 = "Missing: Consented but Not Found at Additional Questions Tool"
+		putexcel B18 = "Missing: Not Consented but Found at Additional Questions Tool"
+		
 		
 		putexcel B19 = "XLS Form Calculation Issue", bold
 		putexcel B20 = "Screening Tool", bold 
@@ -269,6 +286,7 @@ Task outline:
 	* (1) Enrollment Eligibility Error: Not Eligible but Enrolled
 	************************************************************************************
 	use "$np_cf_clean/cvd_confirmation_cleaned.dta", clear 
+	
 
 	preserve 
 	
@@ -462,6 +480,21 @@ Task outline:
 			local i = `i' + 1
 		}				
 
+		* Not Consented but found at additional question tools
+		count if addquest_consent == 1
+		putexcel C18 = (`r(N)')
+		
+		local i = 1
+		foreach v in `vill' {
+		    
+		    local col : word `i' of `cols'
+			
+			count if cal_vill == "`v'" & addquest_consent == 1
+			
+			putexcel `col'17 	= (`r(N)')
+			
+			local i = `i' + 1
+		}	
 
 		putexcel save
 	
@@ -516,7 +549,7 @@ Task outline:
 								sheet("Consented but no ADD data") firstrow(varlabels) sheetmodify
 		}
 	
-	restore 
+	restore 	
 	
 	* with pii 
 	preserve 
@@ -531,6 +564,37 @@ Task outline:
 	
 	restore 
 
+	** additional question but no consent 
+	* no pii 
+	preserve 
+	
+		keep if addquest_consent == 1
+		
+		drop resp_name resp_dad_name resp_mom_name 
+		
+		if _N > 0 {
+			
+			export excel using "$np_comb_clean/Check_Output/SUMMARY_CHECK_OUTPUT.xlsx", ///
+								sheet("No Consented but ADD data") firstrow(varlabels) sheetmodify
+		}
+	
+	restore 	
+	
+	
+	
+	* with pii 
+	preserve 
+	
+		keep if addquest_consent == 1
+		
+		if _N > 0 {
+			
+			export excel using "$comb_clean/Check_Output/Screening_Vs_Confirmation_Tool_Check_Outputs.xlsx", ///
+								sheet("No Consented but ADD data") firstrow(varlabels) sheetmodify
+		}
+	
+	restore 
+	
 	************************************************************************************
 	* (5) Request Cases
 	************************************************************************************

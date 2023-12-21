@@ -50,11 +50,13 @@ Task outline:
 	* Save as dta file 
 	// PII data
 	save "$addq_raw/cvd_confirmation_additional_questions_raw.dta", replace 
+	export excel using "$addq_raw/cvd_confirmation_additional_questions_raw.xlsx", sheet("add_question") firstrow(variables) replace
 	
 	// non PII data
 	// drop PII
 	drop `pii'
 	save "$np_addq_raw/cvd_confirmation_additional_questions_raw_nopii.dta", replace
+	export excel using "$np_addq_raw/cvd_confirmation_additional_questions_raw.xlsx", sheet("add_question") firstrow(variables) replace
 			
 	* Save as dta file 
 	 
