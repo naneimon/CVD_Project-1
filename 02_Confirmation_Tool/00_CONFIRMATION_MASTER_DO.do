@@ -32,7 +32,7 @@ Task outline:
 	* (1) Import
 	
 	if `import' ==  1 {
-	    do "$cf_do_raw/01_import_confirmation.do.do"
+	    do "$cf_do_raw/01_import_confirmation.do"
 	}
 	
 	* (2) HFC Check Check 

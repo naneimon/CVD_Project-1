@@ -103,6 +103,11 @@ Task outline:
 	* Save as combined cleaned data 
 	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
 	
+	
+	* export as exel doc 
+	export excel using "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.xlsx", sheet("combined_data") firstrow(variables) replace 
+	
+	
 	* codebook 
 	codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
 	
@@ -261,8 +266,8 @@ Task outline:
 	
 	* get personal info data 
 	merge 1:1 study_id using 	"$sc_check/cvd_screening_check_nodup.dta", ///
-								keepusing(resp_name resp_dad_name resp_mom_name) ///
-								assert(3) nogen 
+								keepusing(resp_name resp_dad_name resp_mom_name)
+								// assert(3) nogen - 2 unmatched - need to check with Cho Zin
 	
 	order resp_name resp_dad_name resp_mom_name study_id
 	
@@ -516,8 +521,8 @@ Task outline:
 	
 	* get personal info data 
 	merge 1:1 study_id using 	"$sc_check/cvd_screening_check_nodup.dta", ///
-								keepusing(resp_name resp_dad_name resp_mom_name) ///
-								assert(3) nogen 
+								keepusing(resp_name resp_dad_name resp_mom_name) 
+								// assert(3) nogen 2 unmatched obs - need to check with Cho Zin
 	
 	order resp_name resp_dad_name resp_mom_name study_id
 

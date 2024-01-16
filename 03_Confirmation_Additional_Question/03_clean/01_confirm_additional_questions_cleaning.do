@@ -26,8 +26,12 @@ Task outline:
 	use "$np_addq_raw/cvd_confirmation_additional_questions_raw_nopii.dta", clear 
 	
 	* Solve duplicate 
-	* Duplicate by personal information 
-	* no duplicated obs 
+	* Duplicate by study id 
+	duplicates list study_id // need to dicuss with Cho Zin 
+	
+	duplicates drop study_id, force 
+	
+	
 	
 	* residence changes 
 	// this patient reported about changes in residence plan - no longer live in this village for next 6 months	
