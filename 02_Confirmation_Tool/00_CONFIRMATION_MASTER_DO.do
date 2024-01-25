@@ -44,7 +44,7 @@ Task outline:
 	* (3) Cleaning 
 	
 	if `clean' == 1 {
-	    do "$cf_do_clean/01_confirmation_cleaning.do"
+	    do "$cf_do_clean/00_MASTER_CLEAN_DO.do"
 	}
 	
 

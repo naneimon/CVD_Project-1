@@ -154,6 +154,32 @@ set maxvar 32767
 	
 	** (5) 05_CVD_Screening_Dashboard
 	global shiny			"$github/05_CVD_Screening_Dashboard"
+	
+	** (6) VHW Logbook **
+	** PII DATA 
+	global vhw				"$dropbox/05_VHW_Logbook"
+	global vhw_raw			"$vhw/01_raw"
+	global vhw_check		"$vhw/02_check"
+	global vhw_clean		"$vhw/03_cleaned"
+	global vhw_constr		"$vhw/04_construct"
+	global vhw_analyze		"$vhw/05_analysis"
+	
+	** Non-PII DATA  
+	global np_vhw			"$box/05_VHW_Logbook"
+	global np_vhw_raw		"$np_vhw/01_raw"
+	global np_vhw_check		"$np_vhw/02_check"
+	global np_vhw_clean		"$np_vhw/03_cleaned"
+	global np_vhw_constr	"$np_vhw/04_construct"
+	global np_vhw_analyze	"$np_vhw/05_analysis"
+
+	** DOFILE 
+	global vhw_do			"$github/05_VHW_Logbook"
+	global vhw_do_raw		"$vhw_do/01_import"
+	global vhw_do_hfc		"$vhw_do/02_hfc"
+	global vhw_do_clean		"$vhw_do/03_clean"
+	global vhw_do_constr	"$vhw_do/04_construct"
+	global vhw_do_analyze	"$vhw_do/05_analysis"
+
 
 	****************************************************************************
 	****************************************************************************

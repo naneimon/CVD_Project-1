@@ -126,5 +126,88 @@ Task outline:
 		}
 		
 	}
+	
+	
+	****************************************************************************
+	** Append Repeat Group Long Form Dataset into Main wide format datase ** 
+	****************************************************************************
+	
+	* Transform long format 
+	* drug_bsugo_rpt 
+	use "$cf_raw/cvd_confirmation_raw_drug_bsugo_rpt.dta", clear 
+	
+	// drop meatadata 
+	drop _submission__id - _submission__tags _parent_table_name _index 
+	
+	// prepare for reshape 
+	destring cal_bsugo_drug, replace 
+	
+	rename bsugo_* bsugo_*_
+	
+	reshape wide bsugo_*, i(key) j(cal_bsugo_drug)
+	
+	tempfile drug_bsugo_rpt
+	save `drug_bsugo_rpt', replace
+		
+	
+
+
+	* drug_hatto_rpt 
+	use "$cf_raw/cvd_confirmation_raw_drug_hatto_rpt.dta", clear 
+	
+	// drop meatadata 
+	drop _submission__id - _submission__tags _parent_table_name _index 
+	
+	// prepare for reshape 
+	destring cal_hatto_drug, replace 
+	
+	rename hatto_* hatto_*_
+	
+	reshape wide hatto_*, i(key) j(cal_hatto_drug)
+	
+	tempfile drug_hatto_rpt
+	save `drug_hatto_rpt', replace
+	
+	
+	* oth_drug_rep 
+	use "$cf_raw/cvd_confirmation_raw_oth_drug_rep.dta", clear 
+	
+	// drop meatadata 
+	drop _submission__id - _submission__tags _parent_table_name _index 
+	
+	// prepare for reshape 
+	destring cal_oth_drug, replace 
+	
+	rename oth_drug_* oth_drug_*_
+	
+	reshape wide oth_drug_*, i(key) j(cal_oth_drug)
+	
+	tempfile oth_drug_rep
+	save `oth_drug_rep', replace	
+	
+
+	
+	* MERGE with main wide data 
+	// PII data
+	use "$cf_raw/cvd_confirmation_raw.dta", clear 
+	
+	merge 1:m key using `drug_bsugo_rpt', assert(1 3) nogen 
+	order bsugo_drug_name_1 - bsugo_drug_dosu_oth_1, after(drug_bsug_oth_num)
+
+	merge 1:m key using `drug_hatto_rpt', assert(1 3) nogen 
+	order hatto_drug_name_1 - hatto_drug_dosu_oth_4, after(drug_hatt_oth_num)
+	
+	merge 1:m key using `oth_drug_rep', assert(1 3) nogen 
+	order oth_drug_name_1 - oth_drug_dosu_oth_3, after(oth_drug_num)
+
+	save "$cf_raw/cvd_confirmation_raw.dta", replace 
+	export excel using "$cf_raw/cvd_confirmation_raw.xlsx", sheet("confirmation") firstrow(variables) replace
+	
+	// non PII data
+	// drop PII
+	drop `pii'
+	save "$np_cf_raw/cvd_confirmation_raw_nopii.dta", replace
+	export excel using "$np_cf_raw/cvd_confirmation_raw_nopii.xlsx", sheet("confirmation") firstrow(variables) replace
+	
 
 	* end of dofile 

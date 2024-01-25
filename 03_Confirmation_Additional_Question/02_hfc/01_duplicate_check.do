@@ -1,7 +1,7 @@
 /*******************************************************************************
 
 Project Name		: 	CVD Project
-Purpose				:	Confirmation visit - HFC 			
+Purpose				:	Confirmatory Visit: Additional Question	 - HFC 			
 Author				:	Nicholus Tint Zaw
 Date				: 	11/09/2023
 Modified by			:
@@ -23,7 +23,7 @@ Task outline:
 	* import raw data  *
 	********************************************************************************
 	
-	use "$cf_raw/cvd_confirmation_raw.dta", clear 
+	use "$addq_raw/cvd_confirmation_additional_questions_raw.dta", clear 
 	
 	* (1) Duplicate by ID 
 	duplicates tag study_id, gen(dup_id)
@@ -37,14 +37,14 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$cf_check/HFC/Confirmation_Tool_Check_Duplicate.xlsx", ///
+			export excel using "$addq_check/HFC/Confirmation_ADDQuestion_Check_Duplicate.xlsx", ///
 								sheet("Duplicated by ID") firstrow(varlabels) sheetmodify
 		}
 	
 	restore 
 	
 	* (2) Duplicate by personal information 
-	local pii	resp_name resp_age resp_sex resp_dad_name resp_mom_name
+	local pii	s_resp_name s_resp_age s_resp_sex s_resp_dad_name s_resp_mom_name
 	
 	duplicates tag `pii', gen(dup_pii)
 	lab var dup_pii "Duplciated by personal information"
@@ -57,7 +57,7 @@ Task outline:
 		
 		if _N > 0 {
 			
-			export excel using "$cf_check/HFC/Confirmation_Tool_Check_Duplicate.xlsx", ///
+			export excel using "$addq_check/HFC/Confirmation_ADDQuestion_Check_Duplicate.xlsx", ///
 								sheet("Duplicated by Personal info") firstrow(varlabels) sheetmodify
 		}
 	
@@ -66,9 +66,9 @@ Task outline:
 	// temporary solution for duplicate  
 	sort starttime 
 	duplicates drop study_id, force 
-	duplicates drop resp_name resp_age resp_sex resp_dad_name resp_mom_name, force 
+	duplicates drop s_resp_name s_resp_age s_resp_sex s_resp_dad_name s_resp_mom_name, force 
 	
 	* Save as raw data 
-	save "$cf_check/cvd_confirmation_tool_check_nodup.dta", replace 
+	save "$addq_check/cvd_confirmation_additional_questions_check_nodup.dta", replace 
 
 	* end of dofile 

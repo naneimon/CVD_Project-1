@@ -24,13 +24,17 @@ Task outline:
 	* import raw data *
 	********************************************************************************
 	
-	use "$np_cf_check/cvd_confirmation_check.dta", clear 
+	use "$np_cf_clean/cvd_confirmation_cleaned.dta", clear 
 	
 	****************************************************************************
 	** VHW logbook - consented obs preloaded file **
 	****************************************************************************
 	
-	keep if consent == 1 // 3 obs need to drop but keep it as all consent for not delaying in VHW data entry 
+	// keep correct eligable for consent patient 
+	keep if ck_qualify == 1
+	
+	// keep only consent patient 
+	keep if consent == 1 
 	
 	* get personal info data 
 	merge 1:1 study_id using 	"$sc_check/cvd_screening_check_nodup.dta", ///
@@ -44,19 +48,26 @@ Task outline:
 	// keep only required variable 
 	rename resp_sppid ssp_id
 	
-	drop weight height 
+	//drop weight height 
 	rename s_weight weight 
 	rename s_height height 
 	
+	/* need to change XLS programming with ck_* var instead of cal_* 
 	local consent_var	demo_town demo_clinic demo_vill	study_id ssp_id	///
 						resp_name resp_dad_name	resp_mom_name resp_age resp_sex	///
 						weight height cal_hypertension cal_diabetes	mhist_ischemic mhist_stroke	cal_bmi
+						*/
 
 
+	local consent_var	demo_town demo_clinic demo_vill	study_id ssp_id	///
+						resp_name resp_dad_name	resp_mom_name resp_age resp_sex	///
+						weight height ck_hypertension ck_diabetes mhist_ischemic mhist_stroke bmi
+						
+						
 	
 	keep `consent_var'
 	
-	local yesno	cal_hypertension cal_diabetes	mhist_ischemic mhist_stroke
+	local yesno	ck_hypertension ck_diabetes mhist_ischemic mhist_stroke
 	
 	
 	foreach var in `yesno' {

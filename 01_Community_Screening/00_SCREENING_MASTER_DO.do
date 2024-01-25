@@ -44,7 +44,7 @@ Task outline:
 	* (3) Cleaning 
 	
 	if `clean' == 1 {
-	    do "$sc_do_clean/01_screening_cleaning.do"
+	    do "$sc_do_clean/00_MASTER_CLEAN_DO.do"
 	}
 	
 	* (4) Indicator Construction 

@@ -32,7 +32,6 @@ Task outline:
 	duplicates drop study_id, force 
 	
 	
-	
 	* residence changes 
 	// this patient reported about changes in residence plan - no longer live in this village for next 6 months	
 	drop  if study_id == "1/2/46/20231124113232"

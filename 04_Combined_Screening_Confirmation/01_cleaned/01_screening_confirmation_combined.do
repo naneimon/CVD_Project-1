@@ -109,8 +109,9 @@ Task outline:
 	
 	
 	* codebook 
-	codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	
+	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+
 
 	****************************************************************************
 	****************************************************************************

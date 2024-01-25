@@ -22,20 +22,20 @@ Task outline:
 	* Dofile Setting *
 	****************************************************************************
 	
-	local duplicate		1
-	local confirmation 	1
+	local clean			1
+	local preload		1
 	
 	****************************************************************************
-	* (1) Duplicate Check 
+	* (1) Data Cleaning
 	
-	if `duplicate' ==  1 {
-	    do "$sc_do_hfc/01_duplicate_check.do"
+	if `clean' ==  1 {
+	    do "$cf_do_clean/01_confirmation_cleaning.do"
 	}
 	
-	* (2) Confirmation Visit Check 
+	* (2) Created Consent Cases Preloaded File 
 	
-	if `confirmation' ==  1 { 
-	    do "$sc_do_hfc/02_confirmation_check.do"
+	if `preload' == 1 {
+	    do "$cf_do_clean/02_consent_preloaded_prepare.do"
 	}
 	
 	* end of dofile 

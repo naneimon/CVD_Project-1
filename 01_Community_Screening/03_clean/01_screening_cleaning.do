@@ -58,13 +58,16 @@ Task outline:
 	
 	* iecodebook for variable selection and labeling 
 	//iecodebook template using "$np_sc_clean/codebook/cvd_screening_cleaned.xlsx", replace 
-	iecodebook apply using "$np_sc_clean/codebook/cvd_screening_cleaned.xlsx" 
+	iecodebook apply using "$np_sc_clean/codebook/cvd_screening_cleaned_prepare.xlsx" 
 	
 	
 	order	sbp ages sex smallbin bmi stata_cvd_risk_who cvd_cal_check ///
 			stata_cvd_risk cvd_final_check ck_cal_syst_avg_abn ck_cal_diast_avg_abn ///
 			confirmation_visit_yes, after(ck_cal_confirm_visit_tot)
 			
+
+	iecodebook template using "$np_sc_clean/codebook/cvd_screening_cleaned.xlsx", replace 
+	
 	
 	* Save as raw data 
 	save "$np_sc_clean/cvd_screening_cleaned.dta", replace 

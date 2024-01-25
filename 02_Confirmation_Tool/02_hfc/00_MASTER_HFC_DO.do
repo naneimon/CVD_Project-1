@@ -24,7 +24,6 @@ Task outline:
 	
 	local duplicate		1
 	local confirmation 	1
-	local preload		1
 	
 	****************************************************************************
 	* (1) Duplicate Check 
@@ -37,13 +36,6 @@ Task outline:
 	
 	if `confirmation' ==  1 { 
 	    do "$cf_do_hfc/02_consent_check.do"
-	}
-	
-	
-	* (3) Created Consent Cases Preloaded File 
-	
-	if `preload' == 1 {
-	    do "$cf_do_hfc/03_consent_preloaded_prepare.do"
 	}
 	
 	* end of dofile 
