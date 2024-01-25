@@ -33,7 +33,7 @@ Task outline:
 	* export as excel file 
 	preserve 
 	
-		keep if dup_id == 1
+		keep if dup_id != 0 & !mi(dup_id)
 		
 		if _N > 0 {
 			
@@ -53,7 +53,7 @@ Task outline:
 	* export as excel file 
 	preserve 
 	
-		keep if dup_pii == 1
+		keep if dup_pii != 0 & !mi(dup_pii)
 		
 		if _N > 0 {
 			
@@ -62,6 +62,25 @@ Task outline:
 		}
 	
 	restore 	
+	
+	
+	* (3) SPP ID Check
+	duplicates tag resp_sppid if !mi(resp_sppid) & resp_sppid != "9999", gen(dup_sppid)
+	tab dup_sppid, m 
+	
+	* export as excel file 
+	preserve 
+	
+		keep if dup_sppid != 0 & !mi(dup_sppid)
+		
+		if _N > 0 {
+			
+			export excel using "$cf_check/HFC/Confirmation_Tool_Check_Duplicate.xlsx", ///
+								sheet("Duplicated by SPP ID") firstrow(varlabels) sheetmodify
+		}
+	
+	restore 
+	
 	
 	// temporary solution for duplicate  
 	sort starttime 
