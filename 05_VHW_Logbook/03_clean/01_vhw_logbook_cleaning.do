@@ -84,6 +84,8 @@ Task outline:
 	isid  study_id 
 	keep resp_sppid - medic_note_3 study_id
 	
+	gen vhw_logbook = 1 
+	
 	tempfile vhwlog 
 	save `vhwlog', replace 
 	
@@ -91,6 +93,8 @@ Task outline:
 	use "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", clear 
 	
 	merge 1:1 study_id using `vhwlog', assert(1 3) nogen 
+	
+	replace vhw_logbook = 0 if mi(vhw_logbook)
 	
 	* Save as combined cleaned data 
 	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
