@@ -96,17 +96,38 @@ Task outline:
 	
 	replace vhw_logbook = 0 if mi(vhw_logbook)
 	
+
+	
+	* Save as dta file 
+	
+	// non PII data
 	* Save as combined cleaned data 
 	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
 	
 	* export as exel doc 
 	export excel using "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.xlsx", sheet("combined_data") firstrow(variables) replace 
 	
-	
 	* codebook 
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
 	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
 
+
+	// PII data
+	merge 1:1 study_id using "$sc_raw/cvd_screening_raw.dta", keepusing(resp_name resp_dad_name resp_mom_name) assert(2 3)
+	
+	drop if _merge == 2
+
+	* Save as combined cleaned data 
+	save "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.dta", replace 
+	
+	* export as exel doc 
+	export excel using "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.xlsx", sheet("combined_data") firstrow(variables) replace 
+	
+	* codebook 
+	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+	iecodebook template using "$comb_clean/codebook/cvd_screening_confirmation_combined_pii_codebook.xlsx", replace 
+
+	
 	
 	/*
 	** Merge with Combined Dataset ** 
