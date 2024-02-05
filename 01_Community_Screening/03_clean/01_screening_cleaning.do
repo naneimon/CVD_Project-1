@@ -35,7 +35,7 @@ Task outline:
 	
 	preserve 
 	
-		keep if study_id == "1/2/46/20231124113232"
+		keep if study_id == "1/2/46/20231124113232" | study_id == "2/3/55/20231123111157"
 		
 		replace resp_livenow = 0 
 		replace cal_eligible = 0 
@@ -49,8 +49,7 @@ Task outline:
 		
 	restore 
 	
-	
-	drop  if study_id == "1/2/46/20231124113232"
+	drop  if study_id == "1/2/46/20231124113232" | study_id == "2/3/55/20231123111157"
 	
 	append using `case'
 	
