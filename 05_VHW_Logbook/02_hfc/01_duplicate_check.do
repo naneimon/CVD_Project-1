@@ -25,7 +25,20 @@ Task outline:
 	
 	use "$vhw_raw/cvd_vhw_logbook_raw.dta", clear 
 	
+	* drop the duplicate case - feedback from field team
+	gen to_drop = .m 
+	
+	readreplace using "$np_vhw_clean/vhw_logbook_correction.xlsx", ///
+				id(_uuid) ///
+				variable(var_name) ///
+				value(correct_value) ///
+				excel ///
+				import(sheet("duplicate") firstrow)
+	
+	drop if to_drop ==  1	
+	
 	* (1) Duplicate by ID + Visit Date
+	sort resp_sppid visit_date
 	duplicates tag resp_sppid visit_date, gen(dup_id)
 	lab var dup_id "Duplicated by SPP ID and Visit Date"
 	tab dup_id, m 
@@ -38,7 +51,7 @@ Task outline:
 		if _N > 0 {
 			
 			export excel using "$vhw_check/HFC/VHW_LogBook_Check_Duplicate.xlsx", ///
-								sheet("Duplicated by ID & Visit Date") firstrow(varlabels) sheetmodify
+								sheet("Duplicated by ID & Visit Date") firstrow(varlabels) replace 
 		}
 	
 	restore 

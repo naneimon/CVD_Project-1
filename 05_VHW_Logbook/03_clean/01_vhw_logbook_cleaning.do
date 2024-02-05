@@ -25,11 +25,36 @@ Task outline:
 	
 	use "$np_vhw_raw/cvd_vhw_logbook_raw_nopii.dta", clear 
 	
-	* Solve duplicate 
+	* SOLVE DUPLICATE ** 
 	* Duplicate by study id 
 	duplicates list resp_sppid visit_date // need to dicuss with Cho Zin 
 	
-	duplicates drop resp_sppid visit_date, force 			
+	
+	* drop the duplicate case - feedback from field team
+	gen to_drop = .m 
+	
+	readreplace using "$np_vhw_clean/vhw_logbook_correction.xlsx", ///
+				id(_uuid) ///
+				variable(var_name) ///
+				value(correct_value) ///
+				excel ///
+				import(sheet("duplicate") firstrow)
+	
+	drop if to_drop ==  1
+	
+	duplicates drop resp_sppid visit_date, force 	
+	
+	
+	** DATA CORRECTION **
+	tostring amlodipine_stop_oth, replace 
+	
+	readreplace using "$np_vhw_clean/vhw_logbook_correction.xlsx", ///
+				id(_uuid) ///
+				variable(var_name) ///
+				value(correct_value) ///
+				excel ///
+				import(sheet("correction") firstrow)
+	
 	
 	* iecodebook for variable selection and labeling 
 	// iecodebook template using "$np_vhw_clean/codebook/cvd_vhw_logbook_prepare.xlsx", replace 
@@ -49,7 +74,7 @@ Task outline:
 		save `resp_sppid', replace 
 		
 		
-		insheet using 	"$vhw_raw/study_participant_list.csv", clear
+		insheet using 	"$vhw_raw/study_participant_list_Manual_Update.csv", clear
 		
 		rename ssp_id resp_sppid
 		keep resp_sppid study_id
@@ -64,7 +89,7 @@ Task outline:
 	drop if _merge == 2 
 	drop _merge 
 
-	merge 1:1 resp_sppid using `preload_csv', keepusing(study_id) update 
+	merge m:1 resp_sppid using `preload_csv', keepusing(study_id) update 
 	
 	drop if _merge < 3
 	drop _merge 
@@ -78,11 +103,28 @@ Task outline:
 	* export as exel doc 
 	export excel using "$np_vhw_clean/cvd_vhw_logbook_cleaned.xlsx", sheet("vhw_logbook") firstrow(variables) replace 
 
-
+	
+	
 	** MERGE with COMBINED DATASET 
 	** check unique id or not 
-	isid  study_id 
+	
 	keep resp_sppid - medic_note_3 study_id
+	isid  study_id visit_date
+	
+	sort  study_id visit_date
+	
+	bysort study_id: gen visit_index = _n 
+	
+	order visit_index resp_sppid study_id 
+	
+	foreach var of varlist resp_confirm - medic_note_3 { 
+		
+		rename `var' `var'_
+	} 
+	
+	reshape wide *_ , i(resp_sppid study_id) j(visit_index)
+	
+	isid  study_id
 	
 	gen vhw_logbook = 1 
 	
@@ -90,6 +132,7 @@ Task outline:
 	save `vhwlog', replace 
 	
 	
+	** Update the combined dataset + add VHW Logbook ** 
 	use "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", clear 
 	
 	merge 1:1 study_id using `vhwlog', assert(1 3) nogen 
@@ -97,7 +140,6 @@ Task outline:
 	replace vhw_logbook = 0 if mi(vhw_logbook)
 	
 
-	
 	* Save as dta file 
 	
 	// non PII data
@@ -127,23 +169,5 @@ Task outline:
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
 	iecodebook template using "$comb_clean/codebook/cvd_screening_confirmation_combined_pii_codebook.xlsx", replace 
 
-	
-	
-	/*
-	** Merge with Combined Dataset ** 
-	keep resp_sppid - medic_note_3 study_id
-	
-	bysort study_id: gen visit_index = _n 
-	
-	order visit_index resp_sppid study_id 
-	
-	foreach var of varlist resp_confirm - medic_note_3 { 
-		
-		rename `var' `var'_
-	} 
-	
-	reshape wide *_ , i(resp_sppid study_id) j(visit_index)
-	*/
-	
 	
 	* end of dofile 
