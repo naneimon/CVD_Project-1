@@ -148,12 +148,13 @@ set maxvar 32767
 	global np_comb_analyze		"$np_comb/03_analysis"
 
 	** DOFILE 
-	global cb_do_clean			"$addquest_do/01_clean"
-	global cb_do_constr			"$addquest_do/02_construct"
-	global cb_do_analyze		"$addquest_do/03_analysis"
+	global cb_do				"$github/04_Combined_Screening_Confirmation"
+	global cb_do_clean			"$cb_do/01_cleaned"
+	global cb_do_constr			"$cb_do/02_construct"
+	global cb_do_analyze		"$cb_do/03_analysis"
 	
 	** (5) 05_CVD_Screening_Dashboard
-	global shiny			"$github/05_CVD_Screening_Dashboard"
+	global shiny			"$github/06_CVD_Screening_Dashboard"
 	
 	** (6) VHW Logbook **
 	** PII DATA 

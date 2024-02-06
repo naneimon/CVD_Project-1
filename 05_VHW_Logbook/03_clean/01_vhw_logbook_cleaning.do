@@ -41,6 +41,7 @@ Task outline:
 				import(sheet("duplicate") firstrow)
 	
 	drop if to_drop ==  1
+	drop to_drop
 	
 	duplicates drop resp_sppid visit_date, force 	
 	
@@ -95,6 +96,10 @@ Task outline:
 	drop _merge 
 	
 	
+	* drop un-necessary and metadata variable 
+	drop starttime - demo_vill _id - key
+
+	
 	iecodebook template using "$np_vhw_clean/codebook/cvd_vhw_logbook_cleaned.xlsx", replace 
 
 	* Save as raw data 
@@ -102,72 +107,5 @@ Task outline:
 	
 	* export as exel doc 
 	export excel using "$np_vhw_clean/cvd_vhw_logbook_cleaned.xlsx", sheet("vhw_logbook") firstrow(variables) replace 
-
-	
-	
-	** MERGE with COMBINED DATASET 
-	** check unique id or not 
-	
-	keep resp_sppid - medic_note_3 study_id
-	isid  study_id visit_date
-	
-	sort  study_id visit_date
-	
-	bysort study_id: gen visit_index = _n 
-	
-	order visit_index resp_sppid study_id 
-	
-	foreach var of varlist resp_confirm - medic_note_3 { 
-		
-		rename `var' `var'_
-	} 
-	
-	reshape wide *_ , i(resp_sppid study_id) j(visit_index)
-	
-	isid  study_id
-	
-	gen vhw_logbook = 1 
-	
-	tempfile vhwlog 
-	save `vhwlog', replace 
-	
-	
-	** Update the combined dataset + add VHW Logbook ** 
-	use "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", clear 
-	
-	merge 1:1 study_id using `vhwlog', assert(1 3) nogen 
-	
-	replace vhw_logbook = 0 if mi(vhw_logbook)
-	
-
-	* Save as dta file 
-	
-	// non PII data
-	* Save as combined cleaned data 
-	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
-	
-	* export as exel doc 
-	export excel using "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.xlsx", sheet("combined_data") firstrow(variables) replace 
-	
-	* codebook 
-	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-
-
-	// PII data
-	merge 1:1 study_id using "$sc_raw/cvd_screening_raw.dta", keepusing(resp_name resp_dad_name resp_mom_name) assert(2 3)
-	
-	drop if _merge == 2
-
-	* Save as combined cleaned data 
-	save "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.dta", replace 
-	
-	* export as exel doc 
-	export excel using "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.xlsx", sheet("combined_data") firstrow(variables) replace 
-	
-	* codebook 
-	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	iecodebook template using "$comb_clean/codebook/cvd_screening_confirmation_combined_pii_codebook.xlsx", replace 
-
 	
 	* end of dofile 

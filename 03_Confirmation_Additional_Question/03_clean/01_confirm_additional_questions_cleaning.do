@@ -40,9 +40,10 @@ Task outline:
 	replace study_id = "8/2/46/20231128122626" if study_id == "8/2/46/202311281226"
 	
 	* iecodebook for variable selection and labeling 
-	//iecodebook template using "$np_addq_clean/codebook/cvd_confirmation_additional_questions_cleaned.xlsx", replace 
-	iecodebook apply using "$np_addq_clean/codebook/cvd_confirmation_additional_questions_cleaned.xlsx" 
+	//iecodebook template using "$np_addq_clean/codebook/cvd_confirmation_additional_questions_prepare.xlsx", replace 
+	iecodebook apply using "$np_addq_clean/codebook/cvd_confirmation_additional_questions_prepare.xlsx" 
 
+	iecodebook template using "$np_addq_clean/codebook/cvd_confirmation_additional_questions_cleaned.xlsx", replace 
 	
 	* Save as raw data 
 	save "$np_addq_clean/cvd_confirmation_additional_questions_cleaned.dta", replace 

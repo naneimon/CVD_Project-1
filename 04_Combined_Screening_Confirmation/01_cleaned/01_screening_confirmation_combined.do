@@ -19,11 +19,10 @@ Task outline:
 	********************************************************************************
 
 	do "$github/00_dir_setting.do"
-
+	
 	********************************************************************************
 	* DATASET COMBINATION *
 	********************************************************************************
-
 	
 	* Merge Two Confirmation Datasets * 
 	
@@ -106,7 +105,6 @@ Task outline:
 	
 	* export as exel doc 
 	export excel using "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.xlsx", sheet("combined_data") firstrow(variables) replace 
-	
 	
 	* codebook 
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 

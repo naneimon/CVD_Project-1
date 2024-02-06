@@ -103,4 +103,45 @@ Task outline:
 	}
 	
 
+	****************************************************************************
+	** Append Repeat Group Long Form Dataset into Main wide format datase ** 
+	****************************************************************************
+	
+	* Transform long format 
+	
+	* oth_drug_rep 
+	use "$vhw_raw/cvd_vhw_logbook_raw_oth_drug_rep.dta", clear 
+	
+	// drop meatadata 
+	drop _submission__id - _submission__tags _parent_table_name _index 
+	
+	// prepare for reshape 
+	destring cal_oth_drug, replace 
+	
+	rename oth_drug_* oth_drug_*_
+	
+	reshape wide oth_drug_*, i(key) j(cal_oth_drug)
+	
+	tempfile oth_drug_rep
+	save `oth_drug_rep', replace	
+	
+	
+	* MERGE with main wide data 
+	// PII data
+	use "$vhw_raw/cvd_vhw_logbook_raw.dta", clear 
+	
+	merge 1:m key using `oth_drug_rep', assert(1 3) nogen 
+	order oth_drug_name_1 - cal_oth_drug_dosu, after(oth_drug_num)
+
+	save "$vhw_raw/cvd_vhw_logbook_raw.dta", replace 
+	export excel using "$vhw_raw/cvd_vhw_logbook_raw.xlsx", sheet("vhw_logbook") firstrow(variables) replace
+	
+	// non PII data
+	// drop PII
+	drop `pii'
+	save "$np_vhw_raw/cvd_vhw_logbook_raw_nopii.dta", replace
+	export excel using "$np_vhw_raw/cvd_vhw_logbook_raw_nopii.xlsx", sheet("vhw_logbook") firstrow(variables) replace
+	
+
 	* end of dofile 
+

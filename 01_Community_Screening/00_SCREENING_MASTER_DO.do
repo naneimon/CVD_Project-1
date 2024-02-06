@@ -1,7 +1,7 @@
 /*******************************************************************************
 
 Project Name		: 	CVD Project
-Purpose				:	Screening work - HFC MASTER DOFILE 			
+Purpose				:	Screening work - MASTER DOFILE 			
 Author				:	Nicholus Tint Zaw
 Date				: 	11/09/2023
 Modified by			:

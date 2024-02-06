@@ -1,7 +1,7 @@
 /*******************************************************************************
 
 Project Name		: 	CVD Project
-Purpose				:	Confirmation tool - MASTER DOFILE 			
+Purpose				:	Combination of screening + confirmation + addditional question - MASTER DOFILE 			
 Author				:	Nicholus Tint Zaw
 Date				: 	11/09/2023
 Modified by			:
@@ -22,29 +22,27 @@ Task outline:
 	* Dofile Setting *
 	****************************************************************************
 	
-	local import		1
-	local hfc 			1
-	local clean			1
-	local construct 	1
-	local analyse		1
+	local combine		1
+	local construct 	0
+	local analyse		0
 	
 	****************************************************************************
-	* (1) Import
+	* (1) Combine Screening and Confirmation Datasets
 	
-	if `import' ==  1 {
-	    do "$cf_do_raw/01_import_confirmation.do"
+	if `combine' ==  1 {
+	    do "$cb_do_clean/01_screening_confirmation_combined.do"
 	}
 	
-	* (2) HFC Check Check 
+	* (2) Construction
 	
-	if `hfc' ==  1 { 
-	    do "$cf_do_hfc/00_MASTER_HFC_DO.do"
+	if `construct' ==  1 { 
+	    do "$cb_do_constr/XX.do"
 	}
 	
-	* (3) Cleaning 
+	* (3) Analysis 
 	
-	if `clean' == 1 {
-	    do "$cf_do_clean/00_MASTER_CLEAN_DO.do"
+	if `analyse' == 1 {
+	    do "$cb_do_analyze/XX.do"
 	}
 	
 
