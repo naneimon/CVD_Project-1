@@ -46,7 +46,10 @@ Task outline:
 	if `clean' == 1 {
 	    do "$vhw_do_clean/01_vhw_logbook_cleaning.do"
 		
-		do "$vhw_do_clean/02_combined_screening_confirmation_vhw_logbook.do"
+		do "$vhw_do_clean/02_vhw_logbook_monitoring.do"
+		
+		do "$vhw_do_clean/03_combined_screening_confirmation_vhw_logbook.do"
+		
 	}
 	
 

@@ -98,9 +98,8 @@ Task outline:
 	
 	* drop un-necessary and metadata variable 
 	drop starttime - demo_vill _id - key
-
 	
-	iecodebook template using "$np_vhw_clean/codebook/cvd_vhw_logbook_cleaned.xlsx", replace 
+	iecodebook template using "$np_vhw_clean/codebook/cvd_vhw_logbook_cleaned_codebook.xlsx", replace 
 
 	* Save as raw data 
 	save "$np_vhw_clean/cvd_vhw_logbook_cleaned.dta", replace 
