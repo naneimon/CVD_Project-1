@@ -95,6 +95,11 @@ Task outline:
 	
 	gen vhw_logbook = 1 
 	
+	
+	* iecodebook for variable selection and labeling 
+	//iecodebook template using "$np_vhw_clean/codebook/cvd_vhw_logbook_prepare_wide.xlsx", replace 
+	iecodebook apply using "$np_vhw_clean/codebook/cvd_vhw_logbook_prepare_wide.xlsx" 
+	
 	tempfile vhwwide 
 	save `vhwwide', replace 
 	
@@ -121,7 +126,6 @@ Task outline:
 		iecodebook template using "$np_comb_clean/codebook/LONG_cvd_screening_confirmation_combined_codebook.xlsx", replace 
 
 	restore 
-	
 	
 	
 	merge 1:1 study_id using `vhwwide', assert(1 3) nogen 
