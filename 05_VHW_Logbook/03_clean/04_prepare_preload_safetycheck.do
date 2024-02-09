@@ -23,6 +23,8 @@ Task outline:
 	* Import combined dataset * 
 	use "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.dta", clear  
 	
+	keep if ck_qualify == 1
+	
 	local demovar		demo_town demo_clinic demo_vill	study_id ///
 						resp_name resp_dad_name	resp_mom_name resp_age resp_sex	
 						
@@ -73,7 +75,7 @@ Task outline:
 		tab `var', m 
 	} 
 
-	&&&
+	
 	* codebook 
 	iecodebook template using "$comb_clean/safety_checklist/safety_checklist_preload_codebook.xlsx", replace 
 	

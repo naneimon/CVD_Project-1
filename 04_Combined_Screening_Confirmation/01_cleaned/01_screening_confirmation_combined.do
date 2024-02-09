@@ -97,20 +97,20 @@ Task outline:
 	gen addquest_consent = (mi(consent)& confirmation_additional == 1)
 	replace addquest_consent = .m if mi(consent) & mi(confirmation_additional)
 	lab var addquest_consent "Additional question data but not Consented"
-	tab addquest_consent, m 
-	
-	* Save as combined cleaned data 
-	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
-	
+	tab addquest_consent, m 	
 	
 	* export as exel doc 
 	export excel using "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.xlsx", sheet("combined_data") firstrow(variables) replace 
 	
 	* codebook 
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+	//iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+	iecodebook apply using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx" 
 
+	* Save as combined cleaned data 
+	save "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", replace 
 
+	
 	****************************************************************************
 	****************************************************************************
 	** Export as excel file - PII DATA 

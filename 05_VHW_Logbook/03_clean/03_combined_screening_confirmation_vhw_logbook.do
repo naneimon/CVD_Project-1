@@ -103,7 +103,6 @@ Task outline:
 	tempfile vhwwide 
 	save `vhwwide', replace 
 	
-	
 	** Update the combined dataset + add VHW Logbook ** 
 	use "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", clear 
 	
@@ -125,7 +124,8 @@ Task outline:
 		export excel using "$np_comb_clean/LONG_cvd_screening_confirmation_combined_cleaned.xlsx", sheet("LONG_Combined_Data") firstrow(variables) replace 
 		
 		* codebook 
-		iecodebook template using "$np_comb_clean/codebook/LONG_cvd_screening_confirmation_combined_codebook.xlsx", replace 
+		//iecodebook template using "$np_comb_clean/codebook/LONG_cvd_screening_confirmation_combined_codebook.xlsx", replace 
+		iecodebook apply using "$np_comb_clean/codebook/LONG_cvd_screening_confirmation_combined_codebook.xlsx"
 
 	restore 
 	
@@ -146,7 +146,7 @@ Task outline:
 	
 	* codebook 
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
+	iecodebook template using "$np_comb_clean/codebook/cvd_screening_confirmation_combined_all_codebook.xlsx", replace 
 
 
 	// PII data
@@ -164,7 +164,7 @@ Task outline:
 	
 	* codebook 
 	// codebookout "$np_comb_clean/codebook/cvd_screening_confirmation_combined_codebook.xlsx", replace 
-	iecodebook template using "$comb_clean/codebook/cvd_screening_confirmation_combined_pii_codebook.xlsx", replace 
+	iecodebook template using "$comb_clean/codebook/cvd_screening_confirmation_combined_all_pii_codebook.xlsx", replace 
 
 	
 	* end of dofile 
