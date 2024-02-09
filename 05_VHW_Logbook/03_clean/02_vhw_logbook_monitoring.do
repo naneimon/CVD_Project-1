@@ -39,13 +39,19 @@ Task outline:
 	count if vhw_diast_avg != cal_diast_avg
 	
 	order vhw_syst_avg vhw_diast_avg, after(cal_diast_avg)
-
+	
+	lab var vhw_syst_avg 	"Average Systolic Blood Pressure (VHW Visit)"
+	lab var vhw_diast_avg	"Average Diastolic Blood Pessure (VHW Visit)"
 
 	// New Symptoms 
 	destring newsymptom0, replace 
 	gen newsymptom_yes = (newsymptom0 != 1)
 	replace newsymptom_yes = .m if mi(newsymptom0)
 	tab1 newsymptom_yes newsymptom0, m 
+	
+	order newsymptom_yes, after(newsymptom0)
+	
+	lab var newsymptom_yes "Present new or servere symptoms"
 
 	
 	// blood_glucose
@@ -58,6 +64,8 @@ Task outline:
 	// Sort the dataset by patient_id and visit_date
 	sort study_id visit_date
 	bysort study_id: gen visit_num = _n 
+	
+	lab var visit_num "Visit serial number"
 		
 	order study_id visit_num, before(visit_date)
 	sort study_id visit_num visit_date

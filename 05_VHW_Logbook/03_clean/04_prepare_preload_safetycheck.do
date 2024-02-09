@@ -51,6 +51,7 @@ Task outline:
 	*/
 	
 	keep 	`demovar' `enrollvar' `medix_conf' ///
+			vhw_syst_avg_* vhw_diast_avg_* v_blood_glucose_* v_blood_glucose_* v_blood_glucose_* ///
 			v_amlodipine_* amlodipine_pt_* amlodipine_m_* amlodipine_mp_* ///
 			v_losartan_* losartan_pt_* losartan_m_* losartan_mp_* ///
 			v_hctz_* hctz_pt_* hctz_m_* hctz_mp_* ///
@@ -72,7 +73,7 @@ Task outline:
 		tab `var', m 
 	} 
 
-	
+	&&&
 	* codebook 
 	iecodebook template using "$comb_clean/safety_checklist/safety_checklist_preload_codebook.xlsx", replace 
 	

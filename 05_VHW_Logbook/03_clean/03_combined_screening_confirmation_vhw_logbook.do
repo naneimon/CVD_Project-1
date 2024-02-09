@@ -22,7 +22,7 @@ Task outline:
 	
 	* VARIABLE NAME CHECKING *
 	* (1) Additional Questions 
-	import excel using "$np_vhw_clean/codebook/cvd_vhw_logbook_cleaned.xlsx", firstrow clear 
+	import excel using "$np_vhw_constr/codebook/cvd_vhw_logbook_constructed_codebook.xlsx", firstrow clear 
 	
 	drop name label type choices
 	
@@ -61,7 +61,7 @@ Task outline:
 	** MERGE with COMBINED DATASET **
 	********************************************************************************
 	
-	use "$np_vhw_clean/cvd_vhw_logbook_cleaned.dta", clear 
+	use "$np_vhw_constr/cvd_vhw_logbook_constructed.dta", clear 
 	
 	** rename variable as add "v_" prefix to distinguished with same var name from vhwlogbook 
 	foreach var in `tochange' {
@@ -110,7 +110,9 @@ Task outline:
 	preserve 
 		merge 1:m study_id using `vlwlong', assert(1 3) 
 		
-		keep if _merge == 3 // keep only variable required for VHW logbook 
+		keep if _merge == 3 // keep only variable required for VHW logbook
+		
+		drop _merge 
 		
 		isid  study_id visit_date
 		sort  study_id visit_date
@@ -151,6 +153,8 @@ Task outline:
 	merge 1:1 study_id using "$sc_raw/cvd_screening_raw.dta", keepusing(resp_name resp_dad_name resp_mom_name) assert(2 3)
 	
 	drop if _merge == 2
+	
+	drop _merge 
 
 	* Save as combined cleaned data 
 	save "$comb_clean/cvd_screening_confirmation_combined_cleaned_pii.dta", replace 

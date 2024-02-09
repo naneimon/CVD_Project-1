@@ -25,7 +25,7 @@ Task outline:
 	local import		1
 	local hfc 			1
 	local clean			1
-	local construct 	0
+	local construct 	1
 	local analyse		0
 	
 	****************************************************************************
@@ -38,17 +38,21 @@ Task outline:
 	* (2) HFC Check Check 
 	
 	if `hfc' ==  1 { 
+		
 	    do "$vhw_do_hfc/01_duplicate_check.do"
 	}
 	
 	* (3) Cleaning 
 	
 	if `clean' == 1 {
+		
 	    do "$vhw_do_clean/01_vhw_logbook_cleaning.do"
 		
 		do "$vhw_do_clean/02_vhw_logbook_monitoring.do"
 		
 		do "$vhw_do_clean/03_combined_screening_confirmation_vhw_logbook.do"
+		
+		do "$vhw_do_clean/04_prepare_preload_safetycheck.do"
 		
 	}
 	
@@ -56,12 +60,14 @@ Task outline:
 	* (4) Construction
 	
 	if `construct' ==  1 { 
+		
 	    do "$vhw_do_constr/01_cvd_combined_construct.do"
 	}
 	
 	* (5) Analysis 
 	
 	if `analyse' == 1 {
+		
 	    do "$vhw_do_analyze/adhoc_data_check.do"
 	}
 	
