@@ -27,7 +27,7 @@ Task outline:
 	
 	* SOLVE DUPLICATE ** 
 	* Duplicate by study id 
-	duplicates list resp_sppid visit_date // need to dicuss with Cho Zin 
+	duplicates list resp_sppid visit_date 
 	
 	
 	* drop the duplicate case - feedback from field team
