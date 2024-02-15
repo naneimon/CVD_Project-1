@@ -122,7 +122,7 @@ Task outline:
 	lab var cvd_final_check "CVD Risk Final Result Check"
 	tab cvd_final_check, m 	
 	
-	
+
 	* export as excel file 
 	preserve 
 	
