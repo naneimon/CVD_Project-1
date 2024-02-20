@@ -104,9 +104,9 @@ Task outline:
 	// prepare for reshape 
 	destring cal_oth_drug, replace 
 	
-	rename oth_drug_* oth_drug_*_
+	rename oth_drug_* ps_oth_drug_*_
 	
-	reshape wide oth_drug_*, i(key) j(cal_oth_drug)
+	reshape wide ps_oth_drug_*, i(key) j(cal_oth_drug)
 	
 	tempfile oth_drug_rep
 	save `oth_drug_rep', replace	
@@ -136,18 +136,16 @@ Task outline:
 	use "$vhw_raw/cvd_patient_safety_checklists_raw.dta", clear 
 	
 	merge 1:m key using `oth_drug_rep', assert(1 3) nogen 
-	order oth_drug_name_1 - oth_drug_mdosu_oth_1, after(oth_drug_num)
+	order ps_oth_drug_name_1 - ps_oth_drug_mdosu_oth_1, after(oth_drug_num)
 
 	merge 1:m key using `sideffect', assert(1 3) nogen 
 	order sefft_note_1 - sefft_action_3, after(sefft_num)
 	
 	
 	* apply WB codebook command
-	iecodebook template using "$vhw_check/codebook/cvd_patient_safety_checklists_raw_prepare.xlsx", replace 
-	//iecodebook apply using "$vhw_check/codebook/cvd_patient_safety_checklists_raw_prepare.xlsx"
+	//iecodebook template using "$vhw_check/codebook/cvd_patient_safety_checklists_raw_prepare.xlsx", replace 
+	iecodebook apply using "$vhw_check/codebook/cvd_patient_safety_checklists_raw_prepare.xlsx"
 			
-			
-	&&
 	
 	save "$vhw_raw/cvd_patient_safety_checklists_raw.dta", replace 
 	export excel using "$vhw_raw/cvd_patient_safety_checklists_raw.xlsx", sheet("patient_safety_checklists") firstrow(variables) replace
