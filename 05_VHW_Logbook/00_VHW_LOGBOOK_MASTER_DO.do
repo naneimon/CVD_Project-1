@@ -25,6 +25,7 @@ Task outline:
 	local import		1
 	local hfc 			1
 	local clean			1
+	local ps_check		1
 	local construct 	1
 	local analyse		0
 	
@@ -33,6 +34,7 @@ Task outline:
 	
 	if `import' ==  1 {
 	    do "$vhw_do_raw/01_import_vhw_logbook.do"
+
 	}
 	
 	* (2) HFC Check Check 
@@ -56,15 +58,28 @@ Task outline:
 		
 	}
 	
-
-	* (4) Construction
+	* (4) Patient Safety Checklist
+	
+	if `ps_check' ==  1 { 
+		
+	    do "$vhw_do_raw/02_patient_safety_checklist.do"
+		
+		do "$vhw_do_clean/05_safetycheck_cleaning.do"
+		
+		do "$vhw_do_clean/06_combined_screening_confirmation_vhw_logbook_safetycheck.do"
+		
+	}
+		
+	
+	
+	* (5) Construction
 	
 	if `construct' ==  1 { 
 		
 	    do "$vhw_do_constr/01_cvd_combined_construct.do"
 	}
 	
-	* (5) Analysis 
+	* (6) Analysis 
 	
 	if `analyse' == 1 {
 		

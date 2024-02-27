@@ -103,6 +103,7 @@ Task outline:
 	tempfile vhwwide 
 	save `vhwwide', replace 
 	
+	** FOR PATIENT INFO CHECK APP **
 	** Update the combined dataset + add VHW Logbook ** 
 	use "$np_comb_clean/cvd_screening_confirmation_combined_cleaned.dta", clear 
 	
