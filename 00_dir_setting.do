@@ -54,6 +54,16 @@ set maxvar 32767
 	}
 
 
+		else if "`user'" == "adamrichards" {
+		* Adam's Directory
+		
+		**global dropbox		
+		global box			"C:\Users\adamrichards\Box\Myanmar CVD Study 2023-2024\Feasibility Study"
+		global github		"C:\Users\adamrichards\Documents\GitHub\CVD_Project"
+		
+	}
+	
+	
 	****************************************************************************
 	** Set sub-directory ** 
 	****************************************************************************
