@@ -17,8 +17,8 @@ gen e_BPMed = ((s_mhist_drug_bp==1 | mhist_drug_bp == 1 | ck_bp_pass_2==1)| ///
                 (s_ck_cal_syst_avg >=140 & !mi (s_ck_cal_syst_avg) | s_ck_cal_diast_avg >=90 & !mi (s_ck_cal_diast_avg)) & ///
 				(ck_cal_syst_avg >=140 & !mi (ck_cal_syst_avg) | ck_cal_diast_avg >=90 & !mi (ck_cal_diast_avg)))				
 				
-replace e_BPMed = .m if mi(s_mhist_drug_bp) & mi(mhist_drug_bp) & mi(ck_bp_pass_2)| ///
-                         mi(s_ck_cal_syst_avg) & mi(s_ck_cal_diast_avg)| ///
+replace e_BPMed = .m if mi(s_mhist_drug_bp) & mi(mhist_drug_bp) & mi(ck_bp_pass_2)& ///
+                         mi(s_ck_cal_syst_avg) & mi(s_ck_cal_diast_avg)& ///
 						 mi(ck_cal_syst_avg) & mi(ck_cal_diast_avg)				
 tab e_BPMed, m				
 
